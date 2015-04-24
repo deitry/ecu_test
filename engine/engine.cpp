@@ -47,7 +47,6 @@ EC_Engine::EC_Engine()
 #pragma CODE_SECTION("ramfuncs")
 int EC_Engine::Monitoring(void)
 {
-
 	// Общий режим оцифровки датчиков
 	if (!manSens)
 	{
@@ -57,18 +56,9 @@ int EC_Engine::Monitoring(void)
 		getSensor(sensT, chanT, valT);
 		Tv = Tv_koeff*valT;
 	}
-	/*for (;;)
-	{
-		this->list->Check();
-	}*/
 
 	if (canSend)
 	{
-		/*if (manFdbk && (canTransmitId[cntCanTransmit].P == EC_P_M_FDBK))
-		{
-			pid.S = fdbkCnt;
-		}*/
-
 		if (!sendCanMsg(pid)) // (unsigned char*) &this->mode
 		{
 			// 0 - сan свободен, сообщение отправлено
@@ -419,17 +409,6 @@ int EC_Engine::ControlCheck()
 	//int pedal;
 	DIESEL_STATUS stat;
 
-	// *опросить состояние всех датчиков и переключателей
-	//stat = getSensor(sens, chan, val); // NI: Channel 0
-	//float32 currU = val * 4.096 / 65535;
-
-	//float32 fdbkBuf[1024];
-	//memset(fdbkBuf, 0, 1024);
-
-	//for (int i = 0; i < FDBK_BUF; i++)
-	//	stat = getSensor(INJECTOR_SENSOR, INJECTOR_CHANNEL_1, fdbkBuf[i]);
-
-
 	if (!manMode)
 	{
 		// значение режима определяем по резистивному датчику
@@ -499,8 +478,6 @@ void sendCanMsgX(CAN_DATA* data)
 		canWrite(&canSendMessage);
 		canLock = canLockM;
 	}
-
-	//for (int i = 0; i < 20000; i++);
 }
 
 /**
