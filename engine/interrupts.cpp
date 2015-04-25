@@ -364,17 +364,6 @@ __interrupt void canHwIsr()
     PieCtrlRegs.PIEACK.all = 0x0100; //PIEACK_GROUP9;
 }
 
-/*if (manLed1 == 7)
-{
-	GpioDataRegs.GPFDAT.bit.GPIO162 = 1;
-	cpldLedSwitch(LED_RED_2, 1);
-}
-if (manLed2 == 7)
-{
-	GpioDataRegs.GPFDAT.bit.GPIO162 = 0;
-	cpldLedSwitch(LED_RED_2, 0);
-}*/
-
 
 #pragma CODE_SECTION("ramfuncs")
 Uint16 cylToCode(int nCyl)
