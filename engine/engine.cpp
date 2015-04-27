@@ -79,8 +79,9 @@ int EC_Engine::Monitoring(void)
 		}
 	}
 
-	if (inOut)
+	switch (inOut)
 	{
+	case 1:
 		setSensor(sens1, chan1, val1);
 		setSensor(sens2, chan2, val2);
 		setSensor(sens3, chan3, val3);
@@ -89,7 +90,8 @@ int EC_Engine::Monitoring(void)
 		setSensor(sens6, chan6, val6);
 		setSensor(sens7, chan7, val7);
 		setSensor(sens8, chan8, val8);
-	} else {
+		break;
+	case 0:
 		getSensor(sens1, chan1, val1);
 		getSensor(sens2, chan2, val2);
 		getSensor(sens3, chan3, val3);
@@ -98,6 +100,8 @@ int EC_Engine::Monitoring(void)
 		getSensor(sens6, chan6, val6);
 		getSensor(sens7, chan7, val7);
 		getSensor(sens8, chan8, val8);
+	default:
+		break;
 	}
 
 	return 0;
@@ -665,6 +669,21 @@ int EC_Engine::sendCanMsg(PAR_ID_BYTES id)
 	case EC_P_MUN:
 		data.f.val.f = EG::muN;
 		break;
+	case EC_G_CHAN:
+		switch (id.S)
+		{
+		// TODO : поддержка третьего индекса
+		case EC_T_VAL:
+			break;
+		case EC_T_CHAN:
+			break;
+		case EC_T_SENS:
+			break;
+		case EC_S_INOUT:
+			data.f.val.i = EG::inOut;
+			break;
+		}
+		break; 
 	}
 
 	sendCanMsgX(&data);
@@ -813,6 +832,22 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 	case EC_P_MUN:
 		EG::muN = can_data.f.val.f;
 		break;
+	case EC_G_CHAN:
+		switch (msg->pucMsgData[1])
+		{
+		// TODO : поддержка таблиц
+		case EC_T_VAL:
+			//msg->pucMsgData[2]
+			break;
+		case EC_T_CHAN:
+			break;
+		case EC_T_SENS:
+			break;
+		case EC_S_INOUT:
+			EG::inOut = can_data.f.val.i;
+			break;
+		}
+		break; 
 	}
 }
 

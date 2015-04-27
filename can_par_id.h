@@ -123,6 +123,12 @@ union EC_CAN_PAR_ID
 #define EC_P_ITIME		0x52
 #define EC_P_ITIME1		0x53
 
+// Группа параметров, отвечающих за чтение произвольных каналов
+#define EC_G_CHAN		0x61
+#define 	EC_T_VAL		0x00
+#define 	EC_T_CHAN		0x01
+#define 	EC_T_SENS		0x02
+#define 	EC_S_INOUT		0x03	// 0 - датчики, 1 - исполнительные устройства, default - не читать
 
 
 #endif /* CAN_PAR_ID_H_ */
