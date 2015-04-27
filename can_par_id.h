@@ -118,6 +118,7 @@ union EC_CAN_PAR_ID
 #define EC_P_ERRD		0x46
 
 #define EC_P_MUN		0x47
+#define EC_P_DZONE		0x48
 
 #define EC_P_PTIME		0x51
 #define EC_P_ITIME		0x52
