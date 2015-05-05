@@ -669,12 +669,14 @@ int EC_Engine::sendCanMsg(PAR_ID_BYTES id)
 		// чтение произвольных каналов
 		switch (id.S)
 		{
-		// TODO : поддержка третьего индекса
 		case EC_T_VAL:
+			data.f.val.f = EG::valX[id.S2];
 			break;
 		case EC_T_CHAN:
+			data.f.val.i = EG::chanX[id.S2];
 			break;
 		case EC_T_SENS:
+			data.f.val.i = EG::sensX[id.S2];
 			break;
 		case EC_S_INOUT:
 			data.f.val.i = EG::inOut;
@@ -833,15 +835,17 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 		EG::dZone = can_data.f.val.f;
 		break;
 	case EC_G_CHAN:
+		// чтение произвольных каналов
 		switch (msg->pucMsgData[1])
 		{
-		// TODO : поддержка таблиц
 		case EC_T_VAL:
-			//msg->pucMsgData[2]
+			EG::valX[msg->pucMsgData[2]] = can_data.f.val.f;
 			break;
 		case EC_T_CHAN:
+			EG::chanX[msg->pucMsgData[2]] = can_data.f.val.i;
 			break;
 		case EC_T_SENS:
+			EG::sensX[msg->pucMsgData[2]] = can_data.f.val.i;
 			break;
 		case EC_S_INOUT:
 			EG::inOut = can_data.f.val.i;
