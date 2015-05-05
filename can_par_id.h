@@ -22,6 +22,7 @@ struct PAR_ID_BYTES
 {
 	Uint8 P:8;
 	Uint8 S:8;
+	Uint8 S2:8;
 };
 
 union EC_CAN_PAR_ID

@@ -666,6 +666,7 @@ int EC_Engine::sendCanMsg(PAR_ID_BYTES id)
 		data.f.val.f = EG::dZone;
 		break;
 	case EC_G_CHAN:
+		// чтение произвольных каналов
 		switch (id.S)
 		{
 		// TODO : поддержка третьего индекса
