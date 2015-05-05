@@ -10,7 +10,7 @@
 
 //#include <iostream>
 #include <string>
-#include <list>
+#include <map>
 #include "../ecu_global_defines.h"
 #include "../drv/diesel_drv.h"
 
@@ -48,11 +48,22 @@ public:
 
 
 	//virtual int Type();
-	virtual int Check();		// проверка состояния работы устройства
+	int Check();		// проверка состояния работы устройства
 	int GetStatus();
 	
-	virtual float getValue() { return 0; }
-	virtual void setValue(float val) {}
+	float getValue() { return 0; }
+	void setValue(float val) {}
+
+	// "быстрое" чтение с датчика или установка.
+	// В случае быстрого чтения в качестве значения возвращается последнее считанное - _val,
+	// при этом возводится флаг о том, что был запрос на быстрое чтение и во время следующей
+	// процедуры Check (если нормальный запрос на чтение случится раньше, то всё произойдёт само собой)
+	// нужно обновить _val. Аналогично с записью - если поступил запрос на быструю установку значения,
+	// то оно устанавливается в кэшированное _val, а на устройство оно поступает уже вместе со
+	// следующим Check() или setValue()
+	//virtual float getValueFast() { return 0; }
+	//virtual void setValueFast(float val) {}
+
 	//int Init();
 	//int Close();
 };
@@ -67,6 +78,9 @@ public:
 class EC_Actuator : EC_Device
 {
 public:
+	EC_Actuator(Uint16 sens, Uint8 chan, float32 min, float32 max, float k)
+		: EC_Device(sens, chan, min, max, k) {};
+
 	int Type() {return EC_DTYPE_ACTUATOR;}
 	void setValue(float val);	// скорее всего, взаимодействие с устройствами будет
 		// сделано как-то по-другому и скорее всего не в общем, а в частном виде.
@@ -78,6 +92,9 @@ public:
 class EC_Sensor : EC_Device
 {
 public:
+	EC_Sensor(Uint16 sens, Uint8 chan, float32 min, float32 max, float k)
+		: EC_Device(sens, chan, min, max, k) {};
+
 	int Check();
 	int Type() {return EC_DTYPE_SENSOR;}
 	float getValue();	// скорее всего, взаимодействие с устройствами будет выглядеть
@@ -88,18 +105,28 @@ public:
 };
 
 /**
+ * Список идентификаторов используемых в системе устройств.
+ */
+#define D_PEDAL		0x01
+#define D_KEY		0x02
+#define D_PBOOST	0x03
+
+/**
  * Список устройств, используемых для связи блока управления с реальностью.
  */
 class EC_DeviceList
 {
-	//std::map<std::string, EC_Device> list;
-		// каждое устройство сязывается с некоторым именем
+	std::map<int, EC_Device*> list; // каждое устройство сязывается с некоторым именем
 
 public:
+	EC_DeviceList() {}
+	~EC_DeviceList();
 	//EC_DeviceList(std::list<EC_Device> nList) {list = nList;} // не очень удобно
 	//EC_DeviceList(std::list<int> nList);	// здесь в качестве основы для списка передаются
 		// коды-идентификаторы устройств.
-	int Check() {return 0;}
+	int Check() { return 0; }
+	void addDevice(int id, EC_Device* device) { list[id] = device; }
+	EC_Device* getDevice(int id) { return list[id]; }
 
 	// функции опроса, возможно некоторые bool-функции сюда же помимо Check()
 };

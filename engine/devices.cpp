@@ -7,6 +7,7 @@
 
 #include "devices.h"
 
+
 /**
  * Получение статуса устройства: есть/отсутствует/не работает
  */
@@ -50,4 +51,9 @@ void EC_Actuator::setValue(float val)
 		// нормальная работа
 		setSensor(_chan, _sens, _val);
 	}
+}
+
+EC_DeviceList::~EC_DeviceList()
+{
+
 }

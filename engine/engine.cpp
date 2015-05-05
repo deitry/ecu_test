@@ -27,9 +27,11 @@ EC_Engine::EC_Engine()
 
 	this->mode = EC_Start;
 	// инициализация вложенных объектов
-	//list = new EC_DeviceList();
 	hard = new EC_Hardware();
 	hard->Initialise();
+
+	devices = new EC_DeviceList();
+	devices->addDevice(D_PEDAL, (EC_Device*) new EC_Sensor(TEMPERATURE_SENSOR, TEMP_SENS_CHANNEL_2, 0, 10000, 2.77 * 5 / HMLTP));
 }
 
 /**
@@ -300,9 +302,10 @@ int EC_Engine::Key()
 //#pragma CODE_SECTION("ramfuncs")
 float EC_Engine::Pedal()
 {
-	float32 pedValue1;
-	DIESEL_STATUS getTempStatus1 = getSensor(sens, chan, pedValue1); // NI: Channel 1  // TEMP_SENS_CHANNEL_2
-	return floor(pedValue1 * 2.77 * 5 / HMLTP / pedStep + 0.5) * pedStep; //
+	//float32 pedValue1;
+	//DIESEL_STATUS getTempStatus1 = getSensor(sens, chan, pedValue1); // NI: Channel 1  // TEMP_SENS_CHANNEL_2
+	//return floor(pedValue1 * 2.77 * 5 / HMLTP / pedStep + 0.5) * pedStep; //
+	return (floor(this->devices->getDevice(D_PEDAL)->getValue() / pedStep + 0.5) * pedStep);
 }
 
 /**
