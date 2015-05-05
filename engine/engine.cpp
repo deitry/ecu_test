@@ -669,6 +669,9 @@ int EC_Engine::sendCanMsg(PAR_ID_BYTES id)
 	case EC_P_MUN:
 		data.f.val.f = EG::muN;
 		break;
+	case EC_P_DZONE:
+		data.f.val.f = EG::dZone;
+		break;
 	case EC_G_CHAN:
 		switch (id.S)
 		{
@@ -831,6 +834,9 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 		break;
 	case EC_P_MUN:
 		EG::muN = can_data.f.val.f;
+		break;
+	case EC_P_DZONE:
+		EG::dZone = can_data.f.val.f;
 		break;
 	case EC_G_CHAN:
 		switch (msg->pucMsgData[1])
