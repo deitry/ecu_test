@@ -81,25 +81,18 @@ int EC_Engine::Monitoring(void)
 
 	switch (inOut)
 	{
-	case 1:
-		setSensor(sens1, chan1, val1);
-		setSensor(sens2, chan2, val2);
-		setSensor(sens3, chan3, val3);
-		setSensor(sens4, chan4, val4);
-		setSensor(sens5, chan5, val5);
-		setSensor(sens6, chan6, val6);
-		setSensor(sens7, chan7, val7);
-		setSensor(sens8, chan8, val8);
-		break;
 	case 0:
-		getSensor(sens1, chan1, val1);
-		getSensor(sens2, chan2, val2);
-		getSensor(sens3, chan3, val3);
-		getSensor(sens4, chan4, val4);
-		getSensor(sens5, chan5, val5);
-		getSensor(sens6, chan6, val6);
-		getSensor(sens7, chan7, val7);
-		getSensor(sens8, chan8, val8);
+		for (int i = 0; i < SENSCNT; i++)
+		{
+			getSensor(sensX[i], chanX[i], valX[i]);
+		}
+		break;
+	case 1:
+		for (int i = 0; i < SENSCNT; i++)
+		{
+			setSensor(sensX[i], chanX[i], valX[i]);
+		}
+		break;
 	default:
 		break;
 	}

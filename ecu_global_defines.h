@@ -36,6 +36,7 @@ typedef bool _Bool;
 #define FDBK_C2			10
 #define FDBK_C3			(FDBK_BUF-FDBK_C1-FDBK_C2)
 #define PARIDMAX 		40				// количество параметров для вывода на CAN
+#define SENSCNT			8				// количество каналов для считывания произвольных датчиков
 
 #define	 	TIMER_FREQ		200		//Specified in MHz
 #define	 	TIM1_DIV		100		// делитель, определяющий частоту прерываний.
@@ -152,30 +153,9 @@ namespace EG
 	extern float prog_time;
 
 	extern int inOut;						// переключатель между опросами датчиков и выводом значений на испольнительные устройства
-	extern float32 val1;
-	extern float32 val2;
-	extern float32 val3;
-	extern float32 val4;
-	extern float32 val5;
-	extern float32 val6;
-	extern float32 val7;
-	extern float32 val8;
-	extern Uint16 sens1;
-	extern Uint16 sens2;
-	extern Uint16 sens3;
-	extern Uint16 sens4;
-	extern Uint16 sens5;
-	extern Uint16 sens6;
-	extern Uint16 sens7;
-	extern Uint16 sens8;
-	extern Uint8 chan1;
-	extern Uint8 chan2;
-	extern Uint8 chan3;
-	extern Uint8 chan4;
-	extern Uint8 chan5;
-	extern Uint8 chan6;
-	extern Uint8 chan7;
-	extern Uint8 chan8;
+	extern float32 valX[SENSCNT];
+	extern Uint16 sensX[SENSCNT];
+	extern Uint8 chanX[SENSCNT];
 
 	extern float32 valP;	// Pk
 	extern Uint16 sensP;
