@@ -21,9 +21,8 @@ int canStampCnt = 0;
 #pragma CODE_SECTION("ramfuncs")
 int EC_Engine::Transient()
 {
-	float32 tempValue1;
-	for(;;)
-	{
+	//for(;;)
+	//{
 		if (manLed)
 		{
 			cpldLedToggle(LED_GREEN);
@@ -79,12 +78,10 @@ int EC_Engine::Transient()
 			prog_time = static_cast<float>(progCnt)	/ S2US * TIM2_DIV;
 			progCnt = 0;	// сбрасываем таймер
 		}
-	}
-
-	return 0;
+	//}
 }
 
-//#pragma CODE_SECTION("ramfuncs")
+#pragma CODE_SECTION("ramfuncs")
 void EC_Engine::setQCTrans(void)
 {
 	if (fabs(err) > EG::dZone)
