@@ -17,7 +17,7 @@ int EC_Device::GetStatus()
 
 float EC_Sensor::getValue()
 {
-	getSensor(&_chan, &_sens, &_val);
+	getSensor(_chan, _sens, _val);
 	return _val * _k;
 }
 
@@ -38,16 +38,16 @@ void EC_Actuator::setValue(float val)
 	if (_minval > _val)
 	{
 		// ограничение снизу
-		setSensor(&_chan, &_sens, &_minval);
+		setSensor(_chan, _sens, _minval);
 	}
 	else if (_val > _maxval)
 	{
 		// ограничение сверху
-		setSensor(&_chan, &_sens, &_maxval);
+		setSensor(_chan, _sens, _maxval);
 	}
 	else
 	{
 		// нормальная работа
-		setSensor(&_chan, &_sens, &_val);
+		setSensor(_chan, _sens, _val);
 	}
 }

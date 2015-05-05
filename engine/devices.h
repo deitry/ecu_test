@@ -11,8 +11,8 @@
 //#include <iostream>
 #include <string>
 #include <list>
-#include "ecu_global_defines.h"
-#include "drv.h"
+#include "../ecu_global_defines.h"
+#include "../drv/diesel_drv.h"
 
 // определения констант, характеризующих тип данного устройства
 #define EC_DTYPE_ACTUATOR 	1
@@ -34,20 +34,17 @@ protected:
 	//int status;	// переменная, выставляемая Check() - работает устройство или как
 	Uint8 _chan;		// номер канала
 	Uint16 _sens;		// тип датчика
-	Uint32 _minval;		// минимальное значение
-	Uint32 _maxval;		// максимальное значение
+	float32 _minval;		// минимальное значение
+	float32 _maxval;		// максимальное значение
 	float _k;	// коэффициент перевода в соотв. единицы
-	Uint32 _val;		// сохранённое значение последнего запроса
+	float32 _val;		// сохранённое значение последнего запроса
 	
 	// int failedCkeckCnt;	// количество проваленных проверок.
 		// При превышении некоторого числа устройство считается не рабочим
 	
 public:
-	EC_Device(Uint16 sens, Uint8 chan, Uint32 min, Uint32 max, float k) :
-		_sens(sens), _chan(chan), _minval(min), _maxval(max), _k(k) {}
-		
-	EC_Device(Uint16 sens, Uint8 chan, float min, float max, float k) :
-		_sens(sens), _chan(chan), _minval(min/k), _maxval(max/k), _k(k) {}
+	EC_Device(Uint16 sens, Uint8 chan, float32 min, float32 max, float k) :
+		_sens(sens), _chan(chan), _minval(min/k), _maxval(max/k), _k(k), _val(0) {}
 
 
 	//virtual int Type();
@@ -81,6 +78,7 @@ public:
 class EC_Sensor : EC_Device
 {
 public:
+	int Check();
 	int Type() {return EC_DTYPE_SENSOR;}
 	float getValue();	// скорее всего, взаимодействие с устройствами будет выглядеть
 		// по-другому. Как бы то ни было, оставим на всякий случай
@@ -94,7 +92,7 @@ public:
  */
 class EC_DeviceList
 {
-	std::map<std::string, EC_Device> list;
+	//std::map<std::string, EC_Device> list;
 		// каждое устройство сязывается с некоторым именем
 
 public:
