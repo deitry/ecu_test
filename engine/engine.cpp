@@ -286,7 +286,7 @@ float EC_Engine::Tcool()
 /**
  * Опрос положения пускового ключа
  */
-//#pragma CODE_SECTION("ramfuncs")
+#pragma CODE_SECTION("ramfuncs")
 int EC_Engine::Key()
 {
 	float32 tmp;
@@ -297,7 +297,7 @@ int EC_Engine::Key()
 /**
  * Опрос положения педали
  */
-//#pragma CODE_SECTION("ramfuncs")
+#pragma CODE_SECTION("ramfuncs")
 float EC_Engine::Pedal()
 {
 	float32 pedValue1;
@@ -308,7 +308,7 @@ float EC_Engine::Pedal()
 /**
  * Перевод значения цикловой подачи в продолжительность удерживающего импульса в мкс
  */
-//#pragma CODE_SECTION("ramfuncs")
+#pragma CODE_SECTION("ramfuncs")
 Uint16 EC_Engine::QCtoUS(float qc)
 {
 	int tmp = qc/nR*1e9*kQc/HMLTP;
@@ -324,7 +324,7 @@ Uint16 EC_Engine::QCtoUS(float qc)
 /**
  * Коррекция углов поворота. Пересчитываем, учитываем поправки и угол опережения впрыска
  */
-//#pragma CODE_SECTION("ramfuncs")
+#pragma CODE_SECTION("ramfuncs")
 void EC_Engine::setInjPhi(void)
 {
 	for (int ii = 0; ii < DIESEL_N_CYL; ii++)
@@ -400,7 +400,7 @@ void EC_Engine::setInjPhi(void)
  * Проверка системы управления - всё ли работает, все ли данные загружены и т.д.
  * Заодно - переключение режимов
  */
-//#pragma CODE_SECTION("ramfuncs")
+#pragma CODE_SECTION("ramfuncs")
 int EC_Engine::ControlCheck()
 {
 	//int pedal;
@@ -576,11 +576,12 @@ int EC_Engine::sendCanMsg(PAR_ID_BYTES id)
 		case EC_S_INJD2: data.f.val.i = EG::g_duty2; break;
 		}
 		break;
-	case EC_T_INJPHI: data.f.val.f = EG::injPhi[id.S]; break;
-	case EC_T_INJZ:	data.f.val.f = EG::injZ[id.S]; break;
-	case EC_T_INJN:	data.f.val.f = EG::injN[id.S]; break;
-	case EC_T_INJT:	data.f.val.f = EG::dTime[id.S]; break;
-	case EC_P_M_MODE: data.f.val.i = EG::manMode; break;
+	case EC_T_INJPHI: 	data.f.val.f = EG::injPhi[id.S]; break;
+	case EC_T_INJZ:		data.f.val.f = EG::injZ[id.S]; break;
+	case EC_T_INJN:		data.f.val.f = EG::injN[id.S]; break;
+	case EC_T_INJT:		data.f.val.f = EG::dTime[id.S]; break;
+	case EC_T_INJCNT:	data.f.val.i = EG::injCnt[id.S]; break;
+	case EC_P_M_MODE: 	data.f.val.i = EG::manMode; break;
 	case EC_P_M_QC:
 		switch (id.S)
 		{
@@ -755,11 +756,12 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 		case EC_S_INJD2: EG::g_duty2 = can_data.f.val.i; break;
 		}
 		break;
-	case EC_T_INJPHI: EG::injPhi[msg->pucMsgData[1]] = can_data.f.val.f; break;
-	case EC_T_INJZ:	EG::injZ[msg->pucMsgData[1]] = can_data.f.val.f; break;
-	case EC_T_INJN:	EG::injN[msg->pucMsgData[1]] = can_data.f.val.f; break;
-	case EC_T_INJT:	EG::dTime[msg->pucMsgData[1]] = can_data.f.val.f; break;
-	case EC_P_M_MODE: EG::manMode = can_data.f.val.i; break;
+	case EC_T_INJPHI: 	EG::injPhi[msg->pucMsgData[1]] = can_data.f.val.f; break;
+	case EC_T_INJZ:		EG::injZ[msg->pucMsgData[1]] = can_data.f.val.f; break;
+	case EC_T_INJN:		EG::injN[msg->pucMsgData[1]] = can_data.f.val.f; break;
+	case EC_T_INJT:		EG::dTime[msg->pucMsgData[1]] = can_data.f.val.f; break;
+	case EC_T_INJCNT:	EG::injCnt[msg->pucMsgData[1]] = can_data.f.val.f; break;
+	case EC_P_M_MODE: 	EG::manMode = can_data.f.val.i; break;
 	case EC_P_M_QC:
 		switch (msg->pucMsgData[1])
 		{
@@ -858,7 +860,7 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 /**
  * Перевод угла в продолжительность удерживающего импульса в мкс - необходимо для задания подачи в углах
  */
-//#pragma CODE_SECTION("ramfuncs")
+#pragma CODE_SECTION("ramfuncs")
 float angleToTime(float angle)
 {
 	return angle/omegaR* PI/180 *S2US;
@@ -868,7 +870,7 @@ float angleToTime(float angle)
  * Перевод продолжительности в угол.
  * Сейчас не используется.
  */
-//#pragma CODE_SECTION("ramfuncs")
+#pragma CODE_SECTION("ramfuncs")
 float timeToAngle(float time)
 {
 	return omegaR*time;
