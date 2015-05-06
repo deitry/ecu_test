@@ -304,7 +304,7 @@ float EC_Engine::Tcool()
 /**
  * Опрос положения пускового ключа
  */
-#pragma CODE_SECTION("ramfuncs")
+//#pragma CODE_SECTION("ramfuncs")
 int EC_Engine::Key()
 {
 	float32 tmp;
@@ -315,7 +315,7 @@ int EC_Engine::Key()
 /**
  * Опрос положения педали
  */
-#pragma CODE_SECTION("ramfuncs")
+//#pragma CODE_SECTION("ramfuncs")
 float EC_Engine::Pedal()
 {
 	float32 pedValue1;
@@ -418,12 +418,9 @@ void EC_Engine::setInjPhi(void)
  * Проверка системы управления - всё ли работает, все ли данные загружены и т.д.
  * Заодно - переключение режимов
  */
-#pragma CODE_SECTION("ramfuncs")
+//#pragma CODE_SECTION("ramfuncs")
 int EC_Engine::ControlCheck()
 {
-	//int pedal;
-	DIESEL_STATUS stat;
-
 	if (!manMode)
 	{
 		// значение режима определяем по резистивному датчику

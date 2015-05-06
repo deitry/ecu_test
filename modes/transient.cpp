@@ -84,7 +84,7 @@ int EC_Engine::Transient()
 	return 0;
 }
 
-//#pragma CODE_SECTION("ramfuncs")
+#pragma CODE_SECTION("ramfuncs")
 void EC_Engine::setQCTrans(void)
 {
 	if (fabs(err) > EG::dZone)

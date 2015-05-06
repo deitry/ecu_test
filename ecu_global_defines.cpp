@@ -28,27 +28,31 @@ float EG::kQc = 2.3622;
 
 volatile Uint8 EG::g_duty1 = 100;
 volatile Uint8 EG::g_duty2 = 10;
-volatile Uint16 EG::g_step1Us = 600;
+volatile Uint16 EG::g_step1Us = 1300;
 volatile Uint16 EG::g_step2Us = 1000;
 volatile Uint16 EG::g_step3Us = 100;
 
 float EG::mag = 1;
 
 int EG::magi = -1;
+
+#ifndef ZAVOD
 int EG::manQC = 0;
+int EG::manInj = 0;
+int EG::manPed = 0;
 int EG::manQCt = 0;
+#else
+int EG::manQC = 1;
+int EG::manInj = 1;
+int EG::manPed = 1;
+int EG::manQCt = 1;
+#endif
+
 int EG::manQCRelay = 0;
 int EG::manPhi = 0;
 int EG::manOUVT = 0;
 int EG::manMode = 1;
 
-#ifndef ZAVOD
-int EG::manInj = 0;
-#else
-int EG::manInj = 1;
-#endif
-
-int EG::manPed = 0;
 int EG::pedStep = 5;
 float EG::pedal = 400/HMLTP;
 int EG::injOnce = 0;
