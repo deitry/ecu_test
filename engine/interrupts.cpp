@@ -435,6 +435,7 @@ __interrupt void cpu_timer2_isr(void)
 			{
 				getFdbk = 0;
 				i_fdbk = 0;
+				fdbkAll = 0;
 			}
 		}
 	}

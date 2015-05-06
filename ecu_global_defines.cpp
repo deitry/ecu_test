@@ -130,6 +130,7 @@ Uint32 EG::timeCnt = 0;
 int EG::canLock = 0;
 int EG::canLockM = 2;
 int EG::fdbkLock = 0;
+int EG::fdbkAll = 0;
 Uint8 EG::fdbkChan = INJECTOR_CHANNEL_1;
 
 int EG::tmpi = 0;
@@ -158,6 +159,7 @@ PAR_ID_BYTES EG::canTransmitId[PARIDMAX] =
 	{0x12,0x00},
 	{0x13,0x00},
 	{0x14,0x00},
+	{0x15,0x00},
 	{0x21,0x00},
 	{0x22,0x00},
 	{0x22,0x01},

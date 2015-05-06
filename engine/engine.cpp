@@ -62,10 +62,14 @@ int EC_Engine::Monitoring(void)
 		if (!sendCanMsg(pid)) // (unsigned char*) &this->mode
 		{
 			// 0 - сan свободен, сообщение отправлено
-			if (manFdbk && (canTransmitId[cntCanTransmit].P == EC_P_M_FDBK) && (pid.S < FDBK_BUF))
+			if (manFdbk && (!fdbkAll) && (canTransmitId[cntCanTransmit].P == EC_P_M_FDBK) && (pid.S < FDBK_BUF))
 			{
 				fdbkLock = 1;
 				pid.S++;
+				if (pid.S == FDBK_BUF)
+				{
+					fdbkAll = 1;
+				}
 			} else {
 				cntCanTransmit++;
 				// если дошли до конца списка - сбрасываем
@@ -241,7 +245,21 @@ int EC_Engine::ModeCalc()
 	}
 
 
-	setInjector(g_step1Us, g_step2Us, g_duty1, g_duty2);
+	int flag = 1;
+	for (int i = 0; i < DIESEL_N_CYL; i++)
+	{
+		if (injSw[i])
+		{
+			flag = 0;
+			break;
+		}
+	}
+	if (flag)
+	{
+		setInjector(g_step1Us, g_step2Us, g_duty1, g_duty2);
+	}
+
+
 	for (int i = 0; i < DIESEL_T_SETUP; i++)
 		asm(" NOP ");
 
@@ -825,10 +843,10 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 		EG::err = can_data.f.val.f/(EG::kP == 0 ? 1 : EG::kP);
 		break;
 	case EC_P_ERRI:
-		EG::errI = can_data.f.val.f/(EG::kI == 0 ? 1 : EG::kP);
+		EG::errI = can_data.f.val.f/(EG::kI == 0 ? 1 : EG::kI);
 		break;
 	case EC_P_ERRD:
-		EG::errD = can_data.f.val.f/(EG::kD == 0 ? 1 : EG::kP);
+		EG::errD = can_data.f.val.f/(EG::kD == 0 ? 1 : EG::kD);
 		break;
 	case EC_P_MUN:
 		EG::muN = can_data.f.val.f;
