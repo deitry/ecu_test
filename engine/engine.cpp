@@ -350,8 +350,9 @@ void EC_Engine::setInjPhi(void)
 		if (!EG::manPhi)
 		{
 			// угол впрыска с учётом угла опережения и поправкой на форсирующий импульс
-			injPhi[ii] = ii * DIESEL_PHI_MAX/DIESEL_N_CYL
-					- EG::g_step1Us*6*EG::nR/S2US;	// /HMLTP ? какая у нас частота вращения?
+			injPhi[ii] = ii * DIESEL_PHI_MAX/DIESEL_N_CYL;
+					// - EG::g_step1Us*6*EG::nR/S2US;	// /HMLTP ? какая у нас частота вращения?
+					// TODO : проверить правильность смещения
 
 			// угол опережения
 			if (!EG::manOUVT)
