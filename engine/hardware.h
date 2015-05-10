@@ -3,8 +3,6 @@
  *
  * Содержит класс EC_Hardware, объединяющий функции работы с устройством: прерывания и проч.
  *
- * Возможно, не самый лучший подход, если понадобится, потом переделаю.
- *
  *  Created on: 29.10.2014
  *      Author: Дима
  */
@@ -12,12 +10,9 @@
 #ifndef HARDWARE_H_
 #define HARDWARE_H_
 
-//#include "ecu_global_defines.h"
 #include "interrupts.h"
 #include "../drv/diesel_drv.h"
 #include "F28x_Project.h"	// Device Headerfile and Examples Include File
-
-//#define DELAY (CPU_RATE/1000*6*510)  //Qual period at 6 samples
 
 
 /**

@@ -5,21 +5,15 @@
  */
 
 #include "main.h"
-//#include <memcopy.h>
 
-//using namespace EG;
 EC_Engine* engine;
 
 //#pragma CODE_SECTION("ramfuncs")
 int main(void) {
-	
-	// èíèöèàëèçàöèÿ óñòðîéñòâà
-	//MemCopy(&RamfuncsRunStart, &RamfuncsLoadStart, (size_t)&RamfuncsLoadSize);
-	InitSysCtrl();
 
 	// ÈÍÈÖÈÀËÈÇÀÖÈß
 	engine = new EC_Engine();
-	engine->mode = EC_Transient;
 
+	// çàïóñê ÎÑÍÎÂÍÎÃÎ öèêëà
 	engine->Run();
 }

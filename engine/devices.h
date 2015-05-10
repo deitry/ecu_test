@@ -107,9 +107,10 @@ public:
 /**
  * Список идентификаторов используемых в системе устройств.
  */
-#define D_PEDAL		0x01
-#define D_KEY		0x02
-#define D_PBOOST	0x03
+#define D_PEDAL		0x01	// педаль
+#define D_KEY		0x02	// ключ
+#define D_PBOOST	0x03	// давление наддува
+#define D_PINJ		0x04	// давление впрыска
 
 /**
  * Список устройств, используемых для связи блока управления с реальностью.
@@ -121,9 +122,6 @@ class EC_DeviceList
 public:
 	EC_DeviceList() {}
 	~EC_DeviceList();
-	//EC_DeviceList(std::list<EC_Device> nList) {list = nList;} // не очень удобно
-	//EC_DeviceList(std::list<int> nList);	// здесь в качестве основы для списка передаются
-		// коды-идентификаторы устройств.
 	int Check() { return 0; }
 	void addDevice(int id, EC_Device* device) { list[id] = device; }
 	EC_Device* getDevice(int id) { return list[id]; }
