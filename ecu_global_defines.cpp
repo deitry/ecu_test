@@ -26,10 +26,10 @@ float EG::QCadop = 0.0028;
 float EG::alphaDop = 1.3;
 float EG::kQc = 2.3622;
 
-volatile Uint8 EG::g_duty1 = 100;
+volatile Uint8 EG::g_duty1 = 50;
 volatile Uint8 EG::g_duty2 = 10;
 volatile Uint16 EG::g_step1Us = 1300;
-volatile Uint16 EG::g_step2Us = 1000;
+volatile Uint16 EG::g_step2Us = 5000;
 volatile Uint16 EG::g_step3Us = 100;
 
 float EG::mag = 1;
