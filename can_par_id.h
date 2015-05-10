@@ -80,6 +80,7 @@ struct PAR_ID_BYTES
 #define EC_T_INJZ		0x12
 #define EC_T_INJN		0x13
 #define EC_T_INJT		0x14
+#define EC_T_INJCNT		0x15
 
 
 #define EC_P_M_MODE		0x21

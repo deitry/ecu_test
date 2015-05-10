@@ -224,34 +224,38 @@ __interrupt void cpu_timer1_isr(void)
 	} else {
 		for (i1 = 0; i1 < DIESEL_N_CYL; i1++)
 		{
-			injCnt[i1]++;
-			if (injSw[i1] && (injCnt[i1] == dTime[i1]/TIM1_DIV)) // && (QC > QCmin)
+			if (injSw[i1])
+			{
+				injCnt[i1]++;
+				if (injCnt[i1] >= dTime[i1]/TIM1_DIV) // && (QC > QCmin)
 				// для реального двигателя надо будет не_впрыскивать, если мы сидим на минимуме.
 				// но для работы имитатора необходимо впрыскивать всегда
-			{
-				startInjector(cylToCode(i1));
-				// сбрасываем таймер и просим считать обратную связь
-				if ((i1 == 0) && manFdbk)
 				{
-					fdbkTCnt = 0;
-					getFdbk = 1;
-				}
+					startInjector(cylToCode(i1));
+					// сбрасываем таймер и просим считать обратную связь
+					if ((i1 == 0) && manFdbk)
+					{
+						fdbkTCnt = 0;
+						getFdbk = 1;
+					}
 
-				// считываем давление сразу после впрыска
-				// а точнее, нужно опросить давление
-				//getSensor(sens, chan, pedValue1);
+					// считываем давление сразу после впрыска
+					// а точнее, нужно опросить давление
+					//getSensor(sens, chan, pedValue1);
 
 
-				injSw[i1] = 0;
-				injN[i1]++;
+					injSw[i1] = 0;
+					injN[i1]++;
 
-				// отправка временной метки о впрыске
-				if (canTime)
-				{
-					tPid.P = EC_TINJ;
-					engine->sendCanMsg(tPid);
+					// отправка временной метки о впрыске
+					if (canTime)
+					{
+						tPid.P = EC_TINJ;
+						engine->sendCanMsg(tPid);
+					}
 				}
 			}
+
 		}
 	}
 
@@ -431,6 +435,7 @@ __interrupt void cpu_timer2_isr(void)
 			{
 				getFdbk = 0;
 				i_fdbk = 0;
+				fdbkAll = 0;
 			}
 		}
 	}

@@ -21,7 +21,7 @@ typedef bool _Bool;
 #define HMLTP	(HALL_CRANKSHAFT ? 1 : 2)	// Hall MuLTiPlier
 #define HALL_POLARITY		0				// 1 - прерывания по передним фронтам, 0 - по задним фронтам
 
-#define DIESEL_N_CYL	6			// количество цилиндров
+#define DIESEL_N_CYL	1			// количество цилиндров
 #define DIESEL_D_ZONE	0.5			// зона нечувствительности регулятора - лучше сделать переменной
 #define DIESEL_Z_CUT	1			// количество вырезанных зубов
 #define DIESEL_Z_ALL	45			// общее количество зубов с учётом вырезанных
@@ -35,7 +35,7 @@ typedef bool _Bool;
 #define FDBK_C1			20
 #define FDBK_C2			10
 #define FDBK_C3			(FDBK_BUF-FDBK_C1-FDBK_C2)
-#define PARIDMAX 		40				// количество параметров для вывода на CAN
+#define PARIDMAX 		41				// количество параметров для вывода на CAN
 #define SENSCNT			8				// количество каналов для считывания произвольных датчиков
 
 #define	 	TIMER_FREQ		200		//Specified in MHz
@@ -79,6 +79,7 @@ namespace EG
 	extern Uint32 injCnt[DIESEL_N_CYL];		// счётчик, отсчитывающий с частотой прерываний таймера время для впрыска
 	extern Uint8 injSw[DIESEL_N_CYL];		// флаг, обозначающий необходимость впрыска в соответствующий цилиндр
 	extern Uint32 injN[DIESEL_N_CYL];		// число прошедших впрысков
+	//extern bool injection;
 
 	extern float err, errI, errD;			// составляющие ошибки для расчёта подачи по ПИДу
 	extern float kP, kI, kD;				// коэффициенты ПИДа
@@ -190,6 +191,7 @@ namespace EG
 	extern int canLock;
 	extern int canLockM;
 	extern int fdbkLock;		// блокирование записи в буфер до полной отправки
+	extern int fdbkAll;			// блокирование отправки буфера до новой записи
 	extern Uint8 fdbkChan;
 
 	// параметры для определения временной метки
