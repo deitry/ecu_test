@@ -50,6 +50,7 @@ float EC_Engine::Pedal()
 	//float32 pedValue1;
 	//DIESEL_STATUS getTempStatus1 = getSensor(sens, chan, pedValue1); // NI: Channel 1  // TEMP_SENS_CHANNEL_2
 	//return floor(pedValue1 * 2.77 * 5 / HMLTP / pedStep + 0.5) * pedStep; //
+	pInj = this->devices->getDevice(D_PINJ)->getValue();
 	return (floor(this->devices->getDevice(D_PEDAL)->getValue() / pedStep + 0.5) * pedStep);
 }
 

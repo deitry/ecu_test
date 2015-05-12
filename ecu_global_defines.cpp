@@ -11,13 +11,15 @@ float EG::err;
 float EG::errI = 0;
 float EG::errD = 0;
 
-float EG::kP = 1e-4;
-float EG::kI = 2e-5;
-float EG::kD = 2e-5;
+float EG::kP = 1e-5;
+float EG::kI = 2e-6;
+float EG::kD = 2e-6;
 
 float EG::nR = 400/HMLTP;
 float EG::nU = 400/HMLTP;
 float EG::omegaR = 0;
+
+float EG::pInj = 0;
 
 float EG::QC = 1e-4;
 float EG::QCmin = 1e-5;
@@ -50,7 +52,7 @@ int EG::manQCt = 1;
 
 int EG::manQCRelay = 0;
 int EG::manPhi = 0;
-int EG::manOUVT = 0;
+int EG::manOUVT = 1;
 int EG::manMode = 1;
 
 int EG::pedStep = 5;
@@ -69,7 +71,7 @@ float32 EG::val = 0;
 Uint16 EG::sens = TEMPERATURE_SENSOR;
 Uint8 EG::chan = TEMP_SENS_CHANNEL_2;
 
-int EG::inOut = 0;
+int EG::inOut = 2;
 
 int EG::canSend = 1;
 int EG::canTime = 1;

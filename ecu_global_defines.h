@@ -98,6 +98,7 @@ namespace EG
 	extern float muN;						// коэффициент темпа набора частоты вращения
 											// (по факту - темп изменения уставки)
 
+	extern float pInj;
 
 	extern float mag;						// волшебный поправочный коэффициент
 	extern int magi;

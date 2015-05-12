@@ -30,6 +30,7 @@ EC_Engine::EC_Engine()
 
 	devices = new EC_DeviceList();
 	devices->addDevice(D_PEDAL, (EC_Device*) new EC_Sensor(TEMPERATURE_SENSOR, TEMP_SENS_CHANNEL_2, 0, 10000, 2.77 * 5 / HMLTP));
+	devices->addDevice(D_PINJ, (EC_Device*) new EC_Sensor(CURRENT_SENSOR, TEMP_SENS_CHANNEL_6, 0, 10000, 1));
 }
 
 
@@ -229,9 +230,8 @@ void EC_Engine::setInjPhi(void)
 		if (!EG::manPhi)
 		{
 			// угол впрыска с учётом угла опережения и поправкой на форсирующий импульс
-			injPhi[ii] = ii * DIESEL_PHI_MAX/DIESEL_N_CYL;
-					// - EG::g_step1Us*6*EG::nR/S2US;	// /HMLTP ? какая у нас частота вращения?
-					// TODO : проверить правильность смещения
+			injPhi[ii] = ii * DIESEL_PHI_MAX/DIESEL_N_CYL
+					 - EG::g_step1Us*EG::nR/S2US/60 * DIESEL_PHI_MAX;	//  ? какая у нас частота вращения?
 
 			// угол опережения
 			if (!EG::manOUVT)

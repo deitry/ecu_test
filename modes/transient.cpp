@@ -21,64 +21,43 @@ int canStampCnt = 0;
 #pragma CODE_SECTION("ramfuncs")
 int EC_Engine::Transient()
 {
-	//for(;;)
-	//{
-		if (manLed)
-		{
-			cpldLedToggle(LED_GREEN);
+	if (manLed)
+	{
+		cpldLedToggle(LED_GREEN);
 
 #ifdef IS_DOCKED
-			ledCnt++;
-			if (ledCnt == 200)
-			{
-				GpioDataRegs.GPBTOGGLE.bit.GPIO34 = 1;
-				ledCnt = 0;
-			}
+		ledCnt++;
+		if (ledCnt == 200)
+		{
+			GpioDataRegs.GPBTOGGLE.bit.GPIO34 = 1;
+			ledCnt = 0;
+		}
 #endif
-		}
+	}
 
-		if (canTime)
+	if (canTime)
+	{
+		canStampCnt++;
+		if (canStampCnt == 1000)
 		{
-			canStampCnt++;
-			if (canStampCnt == 1000)
-			{
-				canStampCnt = 0;
-				tPid.P = EC_TPROG;
-				engine->sendCanMsg(tPid);
-			}
+			canStampCnt = 0;
+			tPid.P = EC_TPROG;
+			engine->sendCanMsg(tPid);
 		}
-		// проверка состояния системы
-		/*if (this->SysCheck())
-		{
-			// если что-то не так
-			// переходим в режим Failure
-			return 1;
-		}*/
+	}
 
-		// проверка состояния органов управления
-		if (!this->ControlCheck())
-		{
-			// выработка нового режима - перерасчёт топлива и т.д.
-			if (	(mode != EC_Transient)
-				&& 	(mode != EC_Automotive)
-					) return 0;
-		}
+	// ПОДДЕРЖАНИЕ НОВОГО РЕЖИМА
+	// - коррекция углов впрыска
+	this->setInjPhi();
+	// - коррекция величины подачи
+	this->ModeCalc();
+	// мониторинг - отправка сообщений по CAN - сделать "параллельным процессом"?
 
-
-		// ПОДДЕРЖАНИЕ НОВОГО РЕЖИМА
-		// - коррекция углов впрыска
-		setInjPhi();
-		// - коррекция величины подачи
-		this->ModeCalc();
-		// мониторинг - отправка сообщений по CAN - сделать "параллельным процессом"?
-		this->Monitoring();
-
-		if (manDur)
-		{
-			prog_time = static_cast<float>(progCnt)	/ S2US * TIM2_DIV;
-			progCnt = 0;	// сбрасываем таймер
-		}
-	//}
+	if (manDur)
+	{
+		prog_time = static_cast<float>(progCnt)	/ S2US * TIM2_DIV;
+		progCnt = 0;	// сбрасываем таймер
+	}
 }
 
 #pragma CODE_SECTION("ramfuncs")
