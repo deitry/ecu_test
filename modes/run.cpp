@@ -16,35 +16,35 @@ int EC_Engine::Run()
 	// ÎÑÍÎÂÍÎÉ öèêë
 	for (;;)
 	{
-		engine->ControlCheck();
-		engine->Monitoring();
+		this->ControlCheck();
+		this->Monitoring();
 
-		switch (engine->mode)
+		switch (this->mode)
 		{
 		case EC_Start:	// ÏÓÑÊ
 			{
-				engine->Start();
+				this->Start();
 				break;
 			}
 		case EC_Steady:	// ÑÒÀÖÈÎÍÀÐÍÛÉ ðåæèì (õîëîñòîé õîä)
 			{
-				engine->Steady();
+				this->Steady();
 				break;
 			}
 		case EC_Automotive:	// ÍÅÑÒÀÖÈÎÍÀÐÍÛÉ (ðàáî÷èé) ðåæèì - ïåäàëü-ïîäà÷à
 		case EC_Transient:	// ÍÅÑÒÀÖÈÎÍÀÐÍÛÉ (ðàáî÷èé) ðåæèì - ïåäàëü-óñòàâêà
 			{
-				engine->Transient();
+				this->Transient();
 				break;
 			}
 		case EC_Failure:	// ÀÂÀÐÈÉÍÛÉ ðåæèì (àâàðèéíîå çàâåðøåíèå ðàáîòû?)
 			{
-				engine->Failure();
+				this->Failure();
 				break;
 			}
 		case EC_Finish:	// ÇÀÂÅÐØÅÍÈÅ ðàáîòû (íîðìàëüíîå)
 			{
-				engine->Finish();
+				this->Finish();
 				break;
 			}
 		case EC_End:
@@ -52,7 +52,7 @@ int EC_Engine::Run()
 				// ïîäâèñàåì
 				for (;;)
 				{
-					if (engine->mode != EC_End)
+					if (this->mode != EC_End)
 						break;
 				}
 			}
