@@ -74,10 +74,9 @@ __interrupt void adcd1_isr(void)
 #pragma CODE_SECTION("ramfuncs")
 __interrupt void xint1_isr(void)
 {
-	if (manLed)
+	if (manLed == 1)
 	{
 		cpldLedSwitch(LED_YELLOW, 1);
-		//setSensor(ANALOG_OUTPUT, ANALOG_OUT_CHANNEL_2, 4);
 		GpioDataRegs.GPFSET.bit.GPIO162 = 1;
 	}
 	// замер времени между текущим и последним фронтом
@@ -85,8 +84,6 @@ __interrupt void xint1_isr(void)
 	delta_time = ((float) (CpuTimer0Regs.PRD.all-CpuTimer0Regs.TIM.all))
 					/ (S2US*TIMER_FREQ);
 	CpuTimer0Regs.TCR.bit.TRB = 1;	// сбрасываем таймер
-
-	// TODO : отправлять CAN
 
 	if (delta_time == 0)
 	{
@@ -128,7 +125,13 @@ __interrupt void xint1_isr(void)
 	}
 	else
 	{
+		if (manLed > 1)
+		{
+			cpldLedSwitch(LED_YELLOW, 1);
+			GpioDataRegs.GPFSET.bit.GPIO162 = 1;
+		}
 		zCnt = 0;	// обнуляем счётчик зубов
+
 		// чередование циклов коленчатого вала
 		if (HALL_CRANKSHAFT)
 		{
@@ -136,6 +139,7 @@ __interrupt void xint1_isr(void)
 		} else {
 			sw = 0;
 		}
+
 		nCnt++;
 	}
 
@@ -163,13 +167,11 @@ __interrupt void xint1_isr(void)
 	if (manLed)
 	{
 		cpldLedSwitch(LED_YELLOW, 0);
-		//setSensor(ANALOG_OUTPUT, ANALOG_OUT_CHANNEL_2, 0);
-		GpioDataRegs.GPFSET.bit.GPIO162 = 0;
+		GpioDataRegs.GPFCLEAR.bit.GPIO162 = 1;
 	}
 
 	if (manDur)
 	{
-		//GpioDataRegs.GPACLEAR.bit.GPIO2 = 1;
 		int_time = ((float) (CpuTimer0Regs.PRD.all-CpuTimer0Regs.TIM.all))
 									/ (S2US*TIMER_FREQ);
 	}
@@ -193,18 +195,9 @@ __interrupt void xint2_isr(void)
 #pragma CODE_SECTION("ramfuncs")
 __interrupt void cpu_timer1_isr(void)
 {
-	/*if (manDur)
-	{
-		//GpioDataRegs.GPADAT.bit.GPIO1 = 1;
-		ttim = CpuTimer1Regs.TIM.all;
-		//CpuTimer2Regs.TCR.bit.TRB = 1;	// сбрасываем таймер
-	}*/
-
 	if (manLed)
 	{
 		cpldLedSwitch(LED_RED_2, 1);
-		//GpioDataRegs.GPASET.bit.GPIO1 = 1;
-		//setSensor(ANALOG_OUTPUT, ANALOG_OUT_CHANNEL_1, 4);
 	}
 
 
@@ -232,17 +225,13 @@ __interrupt void cpu_timer1_isr(void)
 				// но для работы имитатора необходимо впрыскивать всегда
 				{
 					startInjector(cylToCode(i1));
+
 					// сбрасываем таймер и просим считать обратную связь
 					if ((i1 == 0) && manFdbk)
 					{
 						fdbkTCnt = 0;
 						getFdbk = 1;
 					}
-
-					// считываем давление сразу после впрыска
-					// а точнее, нужно опросить давление
-					//getSensor(sens, chan, pedValue1);
-
 
 					injSw[i1] = 0;
 					injN[i1]++;
@@ -262,16 +251,14 @@ __interrupt void cpu_timer1_isr(void)
 	if (manLed)
 	{
 		cpldLedSwitch(LED_RED_2, 0);
-		//GpioDataRegs.GPATOGGLE.bit.GPIO1 = 1;
-		//setSensor(ANALOG_OUTPUT, ANALOG_OUT_CHANNEL_1, 0);
 	}
 
 	if (manDur)
 	{
-		//GpioDataRegs.GPACLEAR.bit.GPIO1 = 1;
 		int_time1 = ((float) (CpuTimer1Regs.PRD.all - CpuTimer1Regs.TIM.all))
 							/ (S2US*TIMER_FREQ);
 	}
+
 	// Acknowledge this __interrupt to receive more __interrupts from group 1
 	//PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
 }
