@@ -51,8 +51,8 @@ public:
 	int Check();		// проверка состояния работы устройства
 	int GetStatus();
 	
-	float getValue() { return 0; }
-	void setValue(float val) {}
+	virtual float getValue() { return 0; }
+	virtual void setValue(float val) {}
 
 	// "быстрое" чтение с датчика или установка.
 	// В случае быстрого чтения в качестве значения возвращается последнее считанное - _val,
