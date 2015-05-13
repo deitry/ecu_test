@@ -63,7 +63,7 @@ int EG::manCnt = 0;
 int EG::manN = 0;
 int EG::manAngle = 0;
 float EG::injAngle = 3.5;
-float EG::injOuvt = -7;
+float EG::injOuvt = 0;
 
 int EG::finTime = 1000000;
 
@@ -152,7 +152,7 @@ PAR_ID_BYTES EG::canTransmitId[PARIDMAX] =
 	{0x02,0x00},
 	{0x02,0x01},
 	{0x02,0x03},
-	{0x03,0x00},
+	{0x03,0x02},
 	{0x03,0x01},
 	{0x03,0x03},
 	{0x03,0x04},

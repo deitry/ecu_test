@@ -31,11 +31,8 @@ int EC_Engine::Monitoring(void)
 	// Общий режим оцифровки датчиков
 	if (!manSens)
 	{
-		getSensor(sensP, chanP, valP);
-		Pk = Pk_koeff*valP;
-
-		getSensor(sensT, chanT, valT);
-		Tv = Tv_koeff*valT;
+		Pk = this->devices->getDevice(D_PK)->getValue();
+		Tv = this->devices->getDevice(D_TV)->getValue();
 	}
 
 	if (canSend)

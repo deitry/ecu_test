@@ -34,8 +34,8 @@ protected:
 	//int status;	// переменная, выставляемая Check() - работает устройство или как
 	Uint8 _chan;		// номер канала
 	Uint16 _sens;		// тип датчика
-	float32 _minval;		// минимальное значение
-	float32 _maxval;		// максимальное значение
+	float32 _min;		// минимальное значение
+	float32 _max;		// максимальное значение
 	float _k;	// коэффициент перевода в соотв. единицы
 	float32 _val;		// сохранённое значение последнего запроса
 	
@@ -44,7 +44,7 @@ protected:
 	
 public:
 	EC_Device(Uint16 sens, Uint8 chan, float32 min, float32 max, float k) :
-		_sens(sens), _chan(chan), _minval(min/k), _maxval(max/k), _k(k), _val(0) {}
+		_sens(sens), _chan(chan), _min(min/k), _max(max/k), _k(k), _val(0) {}
 
 
 	//virtual int Type();
@@ -89,11 +89,18 @@ public:
 };
 
 // датчик
+// TODO : отделить класс FilteredSensor или добавить фильтр каким-либо другим способом, например, как декоратор.
+// При этом функция фильтрования должна иметь возможность подключаться динамически.
 class EC_Sensor : EC_Device
 {
+private:
+	int _filter;
 public:
-	EC_Sensor(Uint16 sens, Uint8 chan, float32 min, float32 max, float k)
-		: EC_Device(sens, chan, min, max, k) {};
+
+	static const int F_PREVIOUS = 1;	// при выходе за ограничения в качестве текущего значения берётся предыдущее
+
+	EC_Sensor(Uint16 sens, Uint8 chan, float32 min, float32 max, float k, int filter)
+		: EC_Device(sens, chan, min, max, k), _filter(filter) {};
 
 	int Check();
 	int Type() {return EC_DTYPE_SENSOR;}
@@ -109,8 +116,9 @@ public:
  */
 #define D_PEDAL		0x01	// педаль
 #define D_KEY		0x02	// ключ
-#define D_PBOOST	0x03	// давление наддува
+#define D_PK		0x03	// давление наддува
 #define D_PINJ		0x04	// давление впрыска
+#define D_TV		0x05
 
 /**
  * Список устройств, используемых для связи блока управления с реальностью.
