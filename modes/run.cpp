@@ -31,6 +31,7 @@ int EC_Engine::Run()
 				this->Steady();
 				break;
 			}
+		case EC_MaxDyn:
 		case EC_Automotive:	// НЕСТАЦИОНАРНЫЙ (рабочий) режим - педаль-подача
 		case EC_Transient:	// НЕСТАЦИОНАРНЫЙ (рабочий) режим - педаль-уставка
 			{

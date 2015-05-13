@@ -8,10 +8,10 @@ PAGE 0 :  /* Program Memory */
    BEGIN           	: origin = 0x080000, length = 0x000002
    RAMM0           	: origin = 0x000122, length = 0x0002DE
    RAMD0           	: origin = 0x00B000, length = 0x000800
-   RAMLS0          	: origin = 0x008000, length = 0x001800
+   RAMLS0          	: origin = 0x008000, length = 0x002000
    //RAMLS1          	: origin = 0x008800, length = 0x000800
    //RAMLS2      		: origin = 0x009000, length = 0x000800
-   RAMLS3      		: origin = 0x009800, length = 0x000800
+   //RAMLS3      		: origin = 0x009800, length = 0x000800
    RAMLS4      		: origin = 0x00A000, length = 0x000800
    RAMGS14          : origin = 0x01A000, length = 0x001000
    RAMGS15          : origin = 0x01B000, length = 0x001000

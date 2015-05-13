@@ -70,7 +70,9 @@ protected:
 	static Uint16 QCtoUS(float qc);
 	void setInjPhi(void);
 
+	void QCRestriction(void);
 	void setQCTrans(void);
+	void setQCMaxDyn(void);
 	void setQCAuto(void);
 	void setQCSteady(void);
 	void setQCrelay(void);

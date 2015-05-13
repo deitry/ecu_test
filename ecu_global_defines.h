@@ -21,7 +21,7 @@ typedef bool _Bool;
 #define HMLTP	(HALL_CRANKSHAFT ? 1 : 2)	// Hall MuLTiPlier
 #define HALL_POLARITY		0				// 1 - прерывания по передним фронтам, 0 - по задним фронтам
 
-#define DIESEL_N_CYL	1			// количество цилиндров
+#define DIESEL_N_CYL	6			// количество цилиндров
 #define DIESEL_D_ZONE	0.5			// зона нечувствительности регулятора - лучше сделать переменной
 #define DIESEL_Z_CUT	1			// количество вырезанных зубов
 #define DIESEL_Z_ALL	45			// общее количество зубов с учётом вырезанных

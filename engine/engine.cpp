@@ -23,7 +23,7 @@ EC_Engine::EC_Engine()
 
 	this->tCool = 0;
 
-	this->mode = EC_Transient;
+	this->mode = EC_MaxDyn;
 	// инициализация вложенных объектов
 	hard = new EC_Hardware();
 	hard->Initialise();
@@ -37,7 +37,7 @@ EC_Engine::EC_Engine()
 
 
 
-#pragma CODE_SECTION("ramfuncs")
+//#pragma CODE_SECTION("ramfuncs")
 void EC_Engine::setQCrelay()
 {
 	if (err < -errRelayMax)
@@ -105,6 +105,9 @@ int EC_Engine::ModeCalc()
 			//	setQCrelay();
 			//} else {
 				setQCTrans();
+				QCRestriction();
+				// установка значений для впрыска
+				g_step2Us = QCtoUS(QC);
 			//}
 			break;
 
@@ -144,28 +147,26 @@ int EC_Engine::ModeCalc()
 
 			setQCTrans();
 			break;
-		}
+		case EC_MaxDyn:
+			// - считывание уставки - положение педали
+			if (!manPed)
+				pedal = Pedal();
 
-		// ОГРАНИЧЕНИЯ ПОДАЧИ
-		// 1. Скоростная характеристика
-		QCmax = EGD::SpChar->get(nR*HMLTP);
-		// 2. Пневмокоррекция
-		QCadop = Pk*18.29/(alphaDop*287.*Tv*14.3);
+			// ограничение темпа набора
+			if ((muN > 0) && (muN < 1) && (fabs(nU - pedal) > 1) )
+			{
+				nU += muN*(pedal)*fabs(pedal-nU)/(pedal-nU);
+			} else {
+				nU = pedal;
+			}
 
-		// ПРИМЕНЕНИЕ ОГРАНИЧЕНИЙ
-		// - для QCmax выбираем минимальное
-		QCmax = ((QCmax < QCadop) ? QCmax : QCadop);
-		if (QC > QCmax)
-		{
-			QC = QCmax;
+			QCmax = 10000;	// соответственно g_step2UsMax
+				// используем QCmax, чтобы это отразилось на ограничении интеграла
+				// в interrupts.cpp
+			setQCMaxDyn();	// устанавливает непосредственно g_step2Us
+			if (g_step2Us > QCmax) g_step2Us = QCmax;
+			break;
 		}
-		if (QC < QCmin)
-		{
-			QC = QCmin;
-		}
-
-		// установка значений для впрыска
-		g_step2Us = QCtoUS(QC);
 	}
 	else
 	{
@@ -198,10 +199,11 @@ int EC_Engine::ModeCalc()
 		setInjector(g_step1Us, g_step2Us, g_duty1, g_duty2);
 	}
 
-
+	// ждём пока завершится setInjector
 	for (int i = 0; i < DIESEL_T_SETUP; i++)
 		asm(" NOP ");
 
+	// числа для получения обратной связи
 	n1 = (g_step1Us - g_step3Us/2)/TIM2_DIV;
 	n2 = g_step3Us/TIM2_DIV;
 	n3 = g_step2Us/TIM2_DIV;
@@ -346,7 +348,7 @@ int EC_Engine::ControlCheck()
 /**
  * Перевод угла в продолжительность удерживающего импульса в мкс - необходимо для задания подачи в углах
  */
-#pragma CODE_SECTION("ramfuncs")
+//#pragma CODE_SECTION("ramfuncs")
 float angleToTime(float angle)
 {
 	return angle/omegaR* PI/180 *S2US;
@@ -356,8 +358,40 @@ float angleToTime(float angle)
  * Перевод продолжительности в угол.
  * Сейчас не используется.
  */
-#pragma CODE_SECTION("ramfuncs")
+//#pragma CODE_SECTION("ramfuncs")
 float timeToAngle(float time)
 {
 	return omegaR*time;
+}
+
+#pragma CODE_SECTION("ramfuncs")
+void EC_Engine::QCRestriction(void)
+{
+	// ОГРАНИЧЕНИЯ ПОДАЧИ
+	// 1. Скоростная характеристика
+	QCmax = EGD::SpChar->get(nR*HMLTP);
+	// 2. Пневмокоррекция
+	QCadop = Pk*18.29/(alphaDop*287.*Tv*14.3);
+
+	// ПРИМЕНЕНИЕ ОГРАНИЧЕНИЙ
+	// - для QCmax выбираем минимальное
+	QCmax = ((QCmax < QCadop) ? QCmax : QCadop);
+	if (QC > QCmax)
+	{
+		QC = QCmax;
+	}
+	if (QC < QCmin)
+	{
+		QC = QCmin;
+	}
+}
+
+#pragma CODE_SECTION("ramfuncs")
+void EC_Engine::setQCMaxDyn(void)
+{
+	if (fabs(err) > EG::dZone)
+	{
+		// пид-закон
+		g_step2Us = kP*err + kI*errI + kD*errD;
+	}
 }
