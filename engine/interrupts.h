@@ -30,7 +30,7 @@ interrupt void canHwIsr();
 __interrupt void cpu_timer1_isr(void);
 __interrupt void cpu_timer2_isr(void);
 
-Uint16 cylToCode(int nCyl);
+//Uint16 cylToCode(int nCyl);
 
 #ifdef __cplusplus
 }

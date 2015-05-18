@@ -12,7 +12,7 @@ typedef bool _Bool;
 
 #include "F2837xD_Cla_typedefs.h"
 #include "data/field.h"
-#include "drv/diesel_drv.h"
+//#include "drv/diesel_drv.h"
 #include "drv/can_if.h"
 #include "can_par_id.h"
 //#include "engine/engine.h"
@@ -21,7 +21,7 @@ typedef bool _Bool;
 #define HMLTP	(HALL_CRANKSHAFT ? 1 : 2)	// Hall MuLTiPlier
 #define HALL_POLARITY		0				// 1 - прерывани€ по передним фронтам, 0 - по задним фронтам
 
-#define DIESEL_N_CYL	6			// количество цилиндров
+#define DIESEL_N_CYL	1			// количество цилиндров
 #define DIESEL_D_ZONE	0.5			// зона нечувствительности регул€тора - лучше сделать переменной
 #define DIESEL_Z_CUT	1			// количество вырезанных зубов
 #define DIESEL_Z_ALL	45			// общее количество зубов с учЄтом вырезанных
@@ -65,6 +65,8 @@ union CAN_DATA {
     Uint16 all[6];
     CAN_DATA_FIELDS f;
 };
+
+Uint16 cylToCode(int nCyl);
 
 /**
  * ѕространство имЄн дл€ всех глобальных переменных

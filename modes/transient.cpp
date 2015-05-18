@@ -58,6 +58,8 @@ int EC_Engine::Transient()
 		prog_time = static_cast<float>(progCnt)	/ S2US * TIM2_DIV;
 		progCnt = 0;	// сбрасываем таймер
 	}
+
+	return 0;
 }
 
 #pragma CODE_SECTION("ramfuncs")

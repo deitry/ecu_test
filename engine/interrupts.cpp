@@ -226,16 +226,6 @@ __interrupt void cpu_timer1_isr(void)
 				{
 					startInjector(cylToCode(i1));
 
-					// сбрасываем таймер и просим считать обратную связь
-					if ((i1 == 0) && manFdbk)
-					{
-						fdbkTCnt = 0;
-						getFdbk = 1;
-					}
-
-					injSw[i1] = 0;
-					injN[i1]++;
-
 					// отправка временной метки о впрыске
 					if (canTime)
 					{
@@ -413,7 +403,7 @@ __interrupt void cpu_timer2_isr(void)
 
 		if (fdbk_flag)
 		{
-			getSensor(INJECTOR_SENSOR, fdbkChan, fdbkBuf[i_fdbk]);
+			getSensor(INJECTOR_SENSOR, cylToCode(fdbkChan), fdbkBuf[i_fdbk]);
 			fdbkTBuf[i_fdbk] = fdbk_time;
 			i_fdbk++;
 			fdbk_flag = 0;

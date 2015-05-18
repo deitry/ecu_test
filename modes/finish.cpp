@@ -74,8 +74,6 @@ int EC_Engine::Finish()
 		this->ModeCalc();
 		this->Monitoring();
 	}
-
-	return 0;
 }
 
 

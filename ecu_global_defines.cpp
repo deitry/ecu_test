@@ -1,4 +1,5 @@
 #include "ecu_global_defines.h"
+#include "drv\diesel_drv.h"
 
 float EG::injPhi[DIESEL_N_CYL] = {720};
 int EG::injZ[DIESEL_N_CYL] = {0};
@@ -58,7 +59,7 @@ int EG::manMode = 1;
 int EG::pedStep = 5;
 float EG::pedal = 400/HMLTP;
 int EG::injOnce = 0;
-int EG::injCyl = 0x0001;
+int EG::injCyl = 0x0000;
 int EG::manCnt = 0;
 int EG::manN = 0;
 int EG::manAngle = 0;

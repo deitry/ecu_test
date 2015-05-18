@@ -12,12 +12,14 @@ extern "C" {
 #include "F2837xD_GlobalPrototypes.h"         // Prototypes for global functions within the
                                                // .c files.
 #include "F2837xD_Gpio_defines.h"             // Macros used for GPIO support code
+//
 #include <stddef.h>
-
 
 #ifdef __cplusplus
 }
 #endif
+
+#include "../ecu_global_defines.h"
 
 // Индексы адреса датчиков для EMIF
 #define ADDR_IDX_INJ_SEL		3
@@ -328,14 +330,13 @@ DIESEL_STATUS getSensor(Uint16 sensor, Uint8 channel, float32 &value)
 		adcCode = ((dataRdBuf[0] << 6) & 0x0FC0) | ((dataRdBuf[1] >> 2) & 0x003F);
 	}
 
-	float32 pressureU;
-	const float32 gain = 2 * (100 / 13); // Todo: Why 2? To be determined!
+	const float32 gain = 2 * (100 / 13);
 
 	switch (sensor)
 	{
 	case PRESSURE_SENSOR:
 		// Vref = 5.0, Max ADC code = 4095
-		pressureU = adcCode * 5.0 / 4095.0;
+		float32 pressureU = adcCode * 5.0 / 4095.0;
 		// Формула выведена из граничных значений датчика (линейная зависимость) (min 0.2V=20kPa, max 4.9V=250kPa)
 		value = (230.0 * pressureU + 48.0) / 4.7;
 		break;
@@ -357,21 +358,6 @@ DIESEL_STATUS getSensor(Uint16 sensor, Uint8 channel, float32 &value)
 	default:
 		value = adcCode * 4.096 / 65535.0;	// Vref = 4.096
 	}
-	/*switch (sensor)
-	{
-	case PRESSURE_SENSOR:
-		// Vref = 5.0, Max ADC code = 4095
-		pressureU = adcCode * 5.0 / 4095.0;
-		// Формула выведена из граничных значений датчика (линейная зависимость) (min 0.2V=20kPa, max 4.9V=250kPa)
-		value = (230.0 * pressureU + 48.0) / 4.7;
-		break;
-
-	case INJECTOR_SENSOR:
-		value = adcCode * 5.0 / 4095.0;
-
-	default:
-		value = adcCode * 4.096 / 65535.0;
-	}*/
 	
 	lastError = 0;
 	return DIESEL_ERR_NO_ERROR;
@@ -442,6 +428,15 @@ void startInjector(Uint16 injectorNum)
 {
 	emifWrite(ADDR_IDX_INJ_NUM, injectorNum);
 	emifWrite(ADDR_IDX_INJ_START, 0x0001);
+	// сбрасываем таймер и просим считать обратную связь
+	if ((injectorNum == cylToCode(EG::fdbkChan)) && EG::manFdbk)
+	{
+		EG::fdbkTCnt = 0;
+		EG::getFdbk = 1;
+	}
+
+	EG::injSw[injectorNum] = 0;
+	EG::injN[injectorNum]++;
 }
 
 //#pragma CODE_SECTION("ramfuncs")

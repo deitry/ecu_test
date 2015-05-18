@@ -23,7 +23,7 @@ EC_Engine::EC_Engine()
 
 	this->tCool = 0;
 
-	this->mode = EC_MaxDyn;
+	this->mode = EC_Transient;
 	// инициализация вложенных объектов
 	hard = new EC_Hardware();
 	hard->Initialise();

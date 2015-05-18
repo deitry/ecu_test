@@ -181,8 +181,8 @@ void EC_Hardware::ConfigureEPWM(void)
 	EPwm11Regs.TBCTL.bit.CTRMODE = TB_COUNT_UP; // Count up
 	EPwm11Regs.TBCTL.bit.PHSEN = TB_DISABLE;    // Disable phase loading
 	EPwm11Regs.TBCTL.bit.HSPCLKDIV = TB_DIV2;   // Clock ratio to SYSCLKOUT
-	EPwm11Regs.TBCTL.bit.CLKDIV = TB_DIV2;
-	EPwm11Regs.TBPRD = 10;       				// Set timer period
+	EPwm11Regs.TBCTL.bit.CLKDIV = TB_DIV4;
+	EPwm11Regs.TBPRD = 25;       				// Set timer period
 	EPwm11Regs.TBPHS.bit.TBPHS = 0x0000;       // Phase is 0
 	EPwm11Regs.TBCTR = 0x0000;                  // Clear counter
 
