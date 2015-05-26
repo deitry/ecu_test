@@ -35,10 +35,6 @@ volatile Uint16 EG::g_step1Us = 1300;
 volatile Uint16 EG::g_step2Us = 5000;
 volatile Uint16 EG::g_step3Us = 100;
 
-float EG::mag = 1;
-
-int EG::magi = -1;
-
 #ifndef ZAVOD
 int EG::manQC = 0;
 int EG::manInj = 0;
@@ -79,8 +75,6 @@ int EG::canTime = 1;
 int EG::manFdbk = 0;
 int EG::manDur = 1;
 int EG::manLed = 0;
-int EG::manLed1 = 1;
-int EG::manLed2 = 1;
 int EG::manSens = 0;
 
 float EG::delta_time = 0.0;
@@ -138,7 +132,7 @@ int EG::canLock = 0;
 int EG::canLockM = 2;
 int EG::fdbkLock = 0;
 int EG::fdbkAll = 0;
-Uint8 EG::fdbkChan = INJECTOR_CHANNEL_1;
+Uint8 EG::fdbkCyl = 0;
 
 int EG::tmpi = 0;
 PAR_ID_BYTES EG::tparid = {0,0};

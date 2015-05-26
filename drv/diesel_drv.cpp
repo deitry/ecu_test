@@ -429,7 +429,7 @@ void startInjector(Uint16 injectorNum)
 	emifWrite(ADDR_IDX_INJ_NUM, injectorNum);
 	emifWrite(ADDR_IDX_INJ_START, 0x0001);
 	// сбрасываем таймер и просим считать обратную связь
-	if ((injectorNum == cylToCode(EG::fdbkChan)) && EG::manFdbk)
+	if ((injectorNum == cylToCode(EG::fdbkCyl)) && EG::manFdbk)
 	{
 		EG::fdbkTCnt = 0;
 		EG::getFdbk = 1;

@@ -100,10 +100,8 @@ namespace EG
 	extern float muN;						// коэффициент темпа набора частоты вращения
 											// (по факту - темп изменения уставки)
 
-	extern float pInj;
+	extern float pInj;						// давление впрыска
 
-	extern float mag;						// волшебный поправочный коэффициент
-	extern int magi;
 	extern float kQc;						// переводной коэффициент граммы-градусы-обороты
 
 	extern int manQC;						// ручной режим задания подачи
@@ -132,8 +130,6 @@ namespace EG
 	extern int manFdbk;						// вывод обратной связи по току
 	extern int manDur;						// вывод обратной связи по току
 	extern int manLed;						// мигание светодиодами
-	extern int manLed1;						// мигание светодиодами
-	extern int manLed2;						// мигание светодиодами
 	extern int manSens;						// оцифровка датчиков (Pk, Tv...)
 	extern int pedStep;						// шаг изменения педали - округляется до этих значений
 
@@ -195,7 +191,7 @@ namespace EG
 	extern int canLockM;
 	extern int fdbkLock;		// блокирование записи в буфер до полной отправки
 	extern int fdbkAll;			// блокирование отправки буфера до новой записи
-	extern Uint8 fdbkChan;
+	extern Uint8 fdbkCyl;
 
 	// параметры для определения временной метки
 	extern PAR_ID_BYTES tPid;
@@ -209,8 +205,8 @@ namespace EG
 	extern int progCnt;
 	extern int fdbkTCnt;
 	extern int getFdbk;		// снимаем обратную связь
-	//extern int
 
+	// вспомогательные переменные для снятия обратной связи
 	extern Uint16 n1;
 	extern Uint16 n2;
 	extern Uint16 n3;

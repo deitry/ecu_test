@@ -48,6 +48,6 @@ int EC_Engine::Key()
 float EC_Engine::Pedal()
 {
 	//pInj = this->devices->getDevice(D_PINJ)->getValue();
-	return (floor(this->devices->getDevice(D_PEDAL)->getValue() / pedStep + 0.5) * pedStep);
+	return (floor(this->devices->getDevice(EC_S_D_PEDAL)->getValue() / pedStep + 0.5) * pedStep);
 }
 

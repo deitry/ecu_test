@@ -29,10 +29,10 @@ EC_Engine::EC_Engine()
 	hard->Initialise();
 
 	devices = new EC_DeviceList();
-	devices->addDevice(D_PEDAL, (EC_Device*) new EC_Sensor(TEMPERATURE_SENSOR, TEMP_SENS_CHANNEL_2, 0, 10000, 2.77 * 5 / HMLTP, 1));
-	devices->addDevice(D_PK, (EC_Device*) new EC_Sensor(CURRENT_SENSOR, TEMP_SENS_CHANNEL_8, 100, 500, 1640, 1));
-	devices->addDevice(D_TV, (EC_Device*) new EC_Sensor(CURRENT_SENSOR, CURR_SENS_CHANNEL_7, 220, 500, 1464, 1));
-	//devices->addDevice(D_PINJ, (EC_Device*) new EC_Sensor(CURRENT_SENSOR, TEMP_SENS_CHANNEL_6, 0, 10000, 1));
+	devices->addDevice(EC_S_D_PEDAL, (EC_Device*) new EC_Sensor(TEMPERATURE_SENSOR, TEMP_SENS_CHANNEL_2, 0, 10000, 2.77 * 5 / HMLTP, 1));
+	devices->addDevice(EC_S_D_PK, (EC_Device*) new EC_Sensor(CURRENT_SENSOR, TEMP_SENS_CHANNEL_8, 100, 500, 1640, 1));
+	devices->addDevice(EC_S_D_TV, (EC_Device*) new EC_Sensor(CURRENT_SENSOR, CURR_SENS_CHANNEL_7, 220, 500, 1464, 1));
+	//devices->addDevice(EC_S_D_PINJ, (EC_Device*) new EC_Sensor(CURRENT_SENSOR, TEMP_SENS_CHANNEL_6, 0, 10000, 1));
 }
 
 

@@ -403,7 +403,7 @@ __interrupt void cpu_timer2_isr(void)
 
 		if (fdbk_flag)
 		{
-			getSensor(INJECTOR_SENSOR, cylToCode(fdbkChan), fdbkBuf[i_fdbk]);
+			getSensor(INJECTOR_SENSOR, cylToCode(fdbkCyl), fdbkBuf[i_fdbk]);
 			fdbkTBuf[i_fdbk] = fdbk_time;
 			i_fdbk++;
 			fdbk_flag = 0;

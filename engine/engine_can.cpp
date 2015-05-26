@@ -31,8 +31,8 @@ int EC_Engine::Monitoring(void)
 	// Общий режим оцифровки датчиков
 	if (!manSens)
 	{
-		Pk = this->devices->getDevice(D_PK)->getValue();
-		Tv = this->devices->getDevice(D_TV)->getValue();
+		Pk = this->devices->getDevice(EC_S_D_PK)->getValue();
+		Tv = this->devices->getDevice(EC_S_D_TV)->getValue();
 	}
 
 	if (canSend)
@@ -201,7 +201,10 @@ int EC_Engine::sendCanMsg(PAR_ID_BYTES id)
 		case EC_S_QC_AN: data.f.val.f = EG::injAngle; break;
 		case EC_S_QC: data.f.val.f = EG::QC; break;
 		case EC_S_ADOP: data.f.val.f = EG::alphaDop; break;
-		case EC_S_QC_ADOP: data.f.val.f = EG::QCmax; break;
+		case EC_S_QC_ADOP: data.f.val.f = EG::QCadop; break;
+		case EC_S_QC_MAX: data.f.val.f = EG::QCmax; break;
+		case EC_S_QC_MIN: data.f.val.f = EG::QCmin; break;
+		case EC_S_KQC: data.f.val.f = EG::kQc; break;
 		}
 		break;
 	case EC_P_NCYL: data.f.val.i = DIESEL_N_CYL; break;
@@ -243,6 +246,8 @@ int EC_Engine::sendCanMsg(PAR_ID_BYTES id)
 		case EC_P0: data.f.val.i = EG::manInj; break;
 		case EC_S_M_IONCE: data.f.val.i = EG::injOnce; break;
 		case EC_S_M_IN: data.f.val.i = EG::manN; break;
+		case EC_S_M_INJCYL: data.f.val.i = EG::injCyl; break;
+		case EC_S_FDBKCYL: data.f.val.i = EG::fdbkCyl; break;
 		}
 		break;
 	case EC_P_M_PED: data.f.val.i = EG::manPed; break;
@@ -275,8 +280,8 @@ int EC_Engine::sendCanMsg(PAR_ID_BYTES id)
 		switch (id.S)
 		{
 		case EC_P0: data.f.val.i = EG::manSens; break;
-		case EC_S_PK: data.f.val.f = EG::Pk; break;
-		case EC_S_TV: data.f.val.f = EG::Tv; break;
+		case EC_S_D_PK: data.f.val.f = EG::Pk; break;
+		case EC_S_D_TV: data.f.val.f = EG::Tv; break;
 		}
 		break;
 	case EC_P_KP:
@@ -382,7 +387,10 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 		case EC_S_QC_AN: EG::injAngle = can_data.f.val.f; break;
 		case EC_S_QC: EG::QC = can_data.f.val.f; break;
 		case EC_S_ADOP: EG::alphaDop = can_data.f.val.f; break;
-		case EC_S_QC_ADOP: EG::QCmax = can_data.f.val.f; break;
+		case EC_S_QC_ADOP: EG::QCadop = can_data.f.val.f; break;
+		case EC_S_QC_MAX: EG::QCmax = can_data.f.val.f; break;
+		case EC_S_QC_MIN: EG::QCmin = can_data.f.val.f; break;
+		case EC_S_KQC: EG::kQc = can_data.f.val.f; break;
 		}
 		break;
 	case EC_P_PED:
@@ -423,6 +431,8 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 		case EC_P0: EG::manInj = can_data.f.val.i; break;
 		case EC_S_M_IONCE: EG::injOnce = can_data.f.val.i; break;
 		case EC_S_M_IN: EG::manN = can_data.f.val.i; break;
+		case EC_S_M_INJCYL: EG::injCyl = can_data.f.val.i; break;
+		case EC_S_FDBKCYL: EG::fdbkCyl = can_data.f.val.i; break;
 		}
 		break;
 	case EC_P_M_PED: EG::manPed = can_data.f.val.i; break;
@@ -450,8 +460,8 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 		switch (msg->pucMsgData[1])
 		{
 		case EC_P0: EG::manSens = can_data.f.val.i; break;
-		case EC_S_PK: EG::Pk = can_data.f.val.f; break;
-		case EC_S_TV: EG::Tv = can_data.f.val.f; break;
+		case EC_S_D_PK: EG::Pk = can_data.f.val.f; break;
+		case EC_S_D_TV: EG::Tv = can_data.f.val.f; break;
 		}
 		break;
 	case EC_P_KP:
