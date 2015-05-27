@@ -115,11 +115,11 @@ void sendCanMsgX(CAN_DATA* data)
 	canSendMessage.pucMsgData = dataQ;     			// ptr to message content
 
 	// ждём, пока не освободиться место
-	if (!canLock)
-	{
+	//if (!canLock)
+	//{
 		canWrite(&canSendMessage);
 		canLock = canLockM;
-	}
+	//}
 }
 
 
