@@ -207,7 +207,16 @@ int EC_Engine::sendCanMsg(PAR_ID_BYTES id)
 		case EC_S_KQC: data.f.val.f = EG::kQc; break;
 		}
 		break;
-	case EC_P_NCYL: data.f.val.i = DIESEL_N_CYL; break;
+	case EC_P_NCYL:
+		if (id.S == EC_P0)
+		{
+			data.f.val.i = DIESEL_N_CYL;
+		}
+		else
+		{
+			data.f.val.i = EG::cylChannel[id.S-1];
+		}
+		break;
 	case EC_P_PED:
 		switch (id.S)
 		{
@@ -405,6 +414,11 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 		case EC_P0: EG::pedal = can_data.f.val.f; break;
 		case EC_S_PEDST: EG::pedStep = can_data.f.val.i; break;
 		}
+		break;
+	case EC_P_NCYL:
+		if (msg->pucMsgData[1] == EC_P0)
+			break;
+		EG::cylChannel[msg->pucMsgData[1]-1] = can_data.f.val.i;
 		break;
 	case EC_P_VMT: EG::anVMT = can_data.f.val.f; break;
 	case EC_G_INJ:

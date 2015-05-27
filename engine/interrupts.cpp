@@ -348,9 +348,14 @@ __interrupt void canHwIsr()
     PieCtrlRegs.PIEACK.all = 0x0100; //PIEACK_GROUP9;
 }
 
-
 #pragma CODE_SECTION("ramfuncs")
 Uint16 cylToCode(int nCyl)
+{
+	return cylToCodeX(cylChannel[nCyl]);
+}
+
+#pragma CODE_SECTION("ramfuncs")
+Uint16 cylToCodeX(int nCyl)
 {
 	switch (nCyl)
 	{

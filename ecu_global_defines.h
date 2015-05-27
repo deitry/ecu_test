@@ -12,31 +12,30 @@ typedef bool _Bool;
 
 #include "F2837xD_Cla_typedefs.h"
 #include "data/field.h"
-//#include "drv/diesel_drv.h"
 #include "drv/can_if.h"
 #include "can_par_id.h"
-//#include "engine/engine.h"
 
 #define HALL_CRANKSHAFT		0				// какой вал используется. 0 - распределительный, 1 - коленчатый (частый)
-#define HMLTP	(HALL_CRANKSHAFT ? 1 : 2)	// Hall MuLTiPlier
+#define HMLTP				(HALL_CRANKSHAFT ? 1 : 2)	// Hall MuLTiPlier
 #define HALL_POLARITY		0				// 1 - прерывания по передним фронтам, 0 - по задним фронтам
 
-#define DIESEL_N_CYL	1			// количество цилиндров
-#define DIESEL_D_ZONE	0.5			// зона нечувствительности регулятора - лучше сделать переменной
-#define DIESEL_Z_CUT	1			// количество вырезанных зубов
-#define DIESEL_Z_ALL	45			// общее количество зубов с учётом вырезанных
-#define DIESEL_Z_PHI	(360/DIESEL_Z_ALL)		// угол от одного зуба до другого
-#define DIESEL_Z_MAX	(DIESEL_Z_ALL-DIESEL_Z_CUT) 	// количество присутствующих зубов
-#define DIESEL_PHI_MAX	(720/HMLTP)		// угол поворота за цикл (два оборота)
-#define DIESEL_T_SETUP	3000		// время ожидания (в циклах) после использования setInjector
-#define DPM				DIESEL_PHI_MAX	// сокращение
+#define DIESEL_N_CYL		1			// количество цилиндров
+#define DIESEL_N_CYL_MAX	12			// максимально возможное количество цилиндров для данной версии блока
+#define DIESEL_D_ZONE		0.5			// зона нечувствительности регулятора - лучше сделать переменной
+#define DIESEL_Z_CUT		1			// количество вырезанных зубов
+#define DIESEL_Z_ALL		45			// общее количество зубов с учётом вырезанных
+#define DIESEL_Z_PHI		(360/DIESEL_Z_ALL)		// угол от одного зуба до другого
+#define DIESEL_Z_MAX		(DIESEL_Z_ALL-DIESEL_Z_CUT) 	// количество присутствующих зубов
+#define DIESEL_PHI_MAX		(720/HMLTP)		// угол поворота за цикл (два оборота)
+#define DIESEL_T_SETUP		3000		// время ожидания (в циклах) после использования setInjector
+#define DPM					DIESEL_PHI_MAX	// сокращение
 
-#define FDBK_BUF		50				// размер буфера для обратной связи
-#define FDBK_C1			20
-#define FDBK_C2			10
-#define FDBK_C3			(FDBK_BUF-FDBK_C1-FDBK_C2)
-#define PARIDMAX 		42				// количество параметров для вывода на CAN
-#define SENSCNT			8				// количество каналов для считывания произвольных датчиков
+#define FDBK_BUF			50				// размер буфера для обратной связи
+#define FDBK_C1				20
+#define FDBK_C2				10
+#define FDBK_C3				(FDBK_BUF-FDBK_C1-FDBK_C2)
+#define PARIDMAX 			42				// количество параметров для вывода на CAN
+#define SENSCNT				8				// количество каналов для считывания произвольных датчиков
 
 #define	 	TIMER_FREQ		200		//Specified in MHz
 #define	 	TIM1_DIV		100		// делитель, определяющий частоту прерываний.
@@ -67,6 +66,7 @@ union CAN_DATA {
 };
 
 Uint16 cylToCode(int nCyl);
+Uint16 cylToCodeX(int nCyl);
 
 /**
  * Пространство имён для всех глобальных переменных
@@ -75,6 +75,8 @@ Uint16 cylToCode(int nCyl);
  */
 namespace EG
 {
+	extern int cylChannel[DIESEL_N_CYL_MAX];	// массив сопоставлений между внутрипрограммными номерами цилиндров и номерами каналов
+
 	extern float injPhi[DIESEL_N_CYL];		// угол, обозначающий момент впрыска
 	extern int injZ[DIESEL_N_CYL];			// зуб, начиная с которого
 	extern int dTime[DIESEL_N_CYL];			// время в мкс, которое отсчитывается от зуба

@@ -1,6 +1,22 @@
 #include "ecu_global_defines.h"
 #include "drv\diesel_drv.h"
 
+// массив сопоставлений между кодами цилиндров и программным номером цилиндра
+int EG::cylChannel[DIESEL_N_CYL_MAX] =
+		   {0,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
+			9,
+			10,
+			11
+		   };
+
 float EG::injPhi[DIESEL_N_CYL] = {720};
 int EG::injZ[DIESEL_N_CYL] = {0};
 int EG::dTime[DIESEL_N_CYL] = {0};
