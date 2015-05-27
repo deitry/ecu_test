@@ -226,6 +226,9 @@ __interrupt void cpu_timer1_isr(void)
 				{
 					startInjector(cylToCode(i1));
 
+					EG::injN[i1]++;
+					EG::injSw[i1] = 0;
+
 					// отправка временной метки о впрыске
 					if (canTime)
 					{

@@ -35,7 +35,7 @@ typedef bool _Bool;
 #define FDBK_C1			20
 #define FDBK_C2			10
 #define FDBK_C3			(FDBK_BUF-FDBK_C1-FDBK_C2)
-#define PARIDMAX 		41				// количество параметров для вывода на CAN
+#define PARIDMAX 		42				// количество параметров для вывода на CAN
 #define SENSCNT			8				// количество каналов для считывания произвольных датчиков
 
 #define	 	TIMER_FREQ		200		//Specified in MHz

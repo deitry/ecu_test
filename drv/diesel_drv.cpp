@@ -429,14 +429,12 @@ void startInjector(Uint16 injectorNum)
 	emifWrite(ADDR_IDX_INJ_NUM, injectorNum);
 	emifWrite(ADDR_IDX_INJ_START, 0x0001);
 	// сбрасываем таймер и просим считать обратную связь
-	if ((injectorNum == cylToCode(EG::fdbkCyl)) && EG::manFdbk)
+	EG::tmpi = cylToCode(EG::fdbkCyl);
+	if ((injectorNum == EG::tmpi) && EG::manFdbk)
 	{
 		EG::fdbkTCnt = 0;
 		EG::getFdbk = 1;
 	}
-
-	EG::injSw[injectorNum] = 0;
-	EG::injN[injectorNum]++;
 }
 
 //#pragma CODE_SECTION("ramfuncs")

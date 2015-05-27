@@ -354,13 +354,19 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 	switch (msg->pucMsgData[0])
 	{
 	case EC_PREQ: // запрос параметра
-		tparid.P = msg->pucMsgData[1];
-		tparid.S = msg->pucMsgData[2];
-		if (sendCanMsg(tparid))
+		if (canSend)
 		{
-			canLock *= 500;
-			while (--canLock);
-			sendCanMsg(tparid);
+			EG::canTransmitId[PARIDMAX-1].P = msg->pucMsgData[1];
+			EG::canTransmitId[PARIDMAX-1].S = msg->pucMsgData[2];
+		}
+		else
+		{
+			if (sendCanMsg(tparid))
+			{
+				canLock *= 500;
+				while (canLock--);
+				sendCanMsg(tparid);
+			}
 		}
 		break;
 	case EC_P_MODE:
