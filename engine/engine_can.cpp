@@ -372,8 +372,11 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 		{
 			if (sendCanMsg(tparid))
 			{
-				canLock *= 500;
-				while (canLock--);
+				if (canLock)
+				{
+					canLock *= 500;
+					while (canLock--);
+				}
 				sendCanMsg(tparid);
 			}
 		}
