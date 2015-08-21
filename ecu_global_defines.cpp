@@ -51,6 +51,9 @@ volatile Uint16 EG::g_step1Us = 1300;
 volatile Uint16 EG::g_step2Us = 5000;
 volatile Uint16 EG::g_step3Us = 100;
 
+Uint16 g_wakeup_High = 1;			// продолжительность "пробуждающего" импульса для драйвера, LSB = 20ns
+Uint16 g_wakeup_Period = 1;			// период "пробуждающего" импульса для драйвера, LSB = 1us
+
 #ifndef ZAVOD
 int EG::manQC = 0;
 int EG::manInj = 0;
