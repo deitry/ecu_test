@@ -244,9 +244,9 @@ int EC_Engine::sendCanMsg(PAR_ID_BYTES id)
 		switch (id.S)
 		{
 		case EC_P0: data.f.val.i = EG::manQC; break;
-		case EC_S_M_AN: data.f.val.i = EG::manAngle; break;
+		//case EC_S_M_AN: data.f.val.i = EG::manAngle; break;
 		case EC_S_M_IAN: data.f.val.f = EG::injAngle; break;
-		case EC_S_M_QCT: data.f.val.i = EG::manQCt; break;
+		//case EC_S_M_QCT: data.f.val.i = EG::manQCt; break;
 		}
 		break;
 	case EC_P_M_INJ:
@@ -443,9 +443,9 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 		switch (msg->pucMsgData[1])
 		{
 		case EC_P0: EG::manQC = can_data.f.val.i; break;
-		case EC_S_M_AN: EG::manAngle = can_data.f.val.i; break;
+		//case EC_S_M_AN: EG::manAngle = can_data.f.val.i; break;
 		case EC_S_M_IAN: EG::injAngle = can_data.f.val.f; break;
-		case EC_S_M_QCT: EG::manQCt = can_data.f.val.i; break;
+		//case EC_S_M_QCT: EG::manQCt = can_data.f.val.i; break;
 		}
 		break;
 	case EC_P_M_INJ:

@@ -51,8 +51,8 @@ volatile Uint16 EG::g_step1Us = 1300;
 volatile Uint16 EG::g_step2Us = 5000;
 volatile Uint16 EG::g_step3Us = 100;
 
-Uint16 g_wakeup_High = 1;			// продолжительность "пробуждающего" импульса для драйвера, LSB = 20ns
-Uint16 g_wakeup_Period = 1;			// период "пробуждающего" импульса для драйвера, LSB = 1us
+Uint16 EG::g_wakeup_High = 1;			// продолжительность "пробуждающего" импульса для драйвера, LSB = 20ns
+Uint16 EG::g_wakeup_Period = 1;			// период "пробуждающего" импульса для драйвера, LSB = 1us
 
 #ifndef ZAVOD
 int EG::manQC = 0;
@@ -63,7 +63,7 @@ int EG::manQCt = 0;
 int EG::manQC = 1;
 int EG::manInj = 1;
 int EG::manPed = 1;
-int EG::manQCt = 1;
+//int EG::manQCt = 1;
 #endif
 
 int EG::manQCRelay = 0;
@@ -77,7 +77,7 @@ int EG::injOnce = 0;
 int EG::injCyl = 0x0000;
 int EG::manCnt = 0;
 int EG::manN = 0;
-int EG::manAngle = 0;
+//int EG::manAngle = 0;
 float EG::injAngle = 3.5;
 float EG::injOuvt = 0;
 

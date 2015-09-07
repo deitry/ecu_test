@@ -35,8 +35,6 @@ EC_Engine::EC_Engine()
 	//devices->addDevice(EC_S_D_PINJ, (EC_Device*) new EC_Sensor(CURRENT_SENSOR, TEMP_SENS_CHANNEL_6, 0, 10000, 1));
 }
 
-
-
 //#pragma CODE_SECTION("ramfuncs")
 void EC_Engine::setQCrelay()
 {
@@ -171,20 +169,24 @@ int EC_Engine::ModeCalc()
 	else
 	{
 		// ручной режим
-		if (manAngle)
+		switch (manQC)
 		{
+		case EG_MANQC_ANGLE:
 			g_step2Us = angleToTime(injAngle);
-		}
-		else
-		{
-			if (!manQCt)
-			{
-				g_step2Us = QCtoUS(QC);
-			}
+			break;
+		case EG_MANQC_QC:
+			g_step2Us = QCtoUS(QC);
+			break;
+		case EG_MANQC_TIME:
+		default:
+			// ничего не делать, значение g_step2Us остаётся таким какое есть
+			// только если его не поменяют через can
+			break;
 		}
 	}
 
-
+	// проверка на доступность форсунок
+	// чтобы не начать изменять параметры прямо перед впрыском - иначе можем не успеть
 	int flag = 1;
 	for (int i = 0; i < DIESEL_N_CYL; i++)
 	{
@@ -315,7 +317,6 @@ int EC_Engine::ControlCheck()
 	{
 		// значение режима определяем по резистивному датчику
 		switch (Key())
-
 		{
 		case 1:
 			mode = EC_Start; break;

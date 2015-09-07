@@ -425,8 +425,8 @@ void setInjector(Uint16 step1TimeUs, Uint16 step2TimeUs, Uint8 dutyCycle1, Uint8
 	emifWrite(ADDR_IDX_STEP_2_TIME, step2TimeUs);
 	emifWrite(ADDR_IDX_DUTY_CYCLE, dutyCycle);
 
-	emifWrite(ADDR_IDX_WAKEUP_HIGH, g_wakeup_High);
-	emifWrite(ADDR_IDX_WAKEUP_PERIOD, g_wakeup_Period);
+	emifWrite(ADDR_IDX_WAKEUP_HIGH, EG::g_wakeup_High);
+	emifWrite(ADDR_IDX_WAKEUP_PERIOD, EG::g_wakeup_Period);
 }
 
 #pragma CODE_SECTION("ramfuncs")
