@@ -26,12 +26,71 @@ struct PAR_ID_BYTES
 	Uint8 S3:8;
 };
 
+// элемент списка для посылки по CAN
+// Обойдёмся без контейнера, потому что не нужен богатый функционал, а место экономить надо
+class CANListElement
+{
+public:
+	PAR_ID_BYTES current;
+	CANListElement* next;
+
+	static CANListElement* first;	// всегда храним ссылку на первый элемент, чтобы проще было искать концы, если что
+
+public:
+	CANListElement(PAR_ID_BYTES id, CANListElement* parent = 0)
+	{
+		current = id;
+		if (!parent)
+		{
+			parent = Last();
+		}
+
+		if (!parent)
+		{
+			first = this;
+		}
+		else
+		{
+			parent->next = this;
+		}
+	}
+
+	static CANListElement* Last()
+	{
+		CANListElement* last = first;
+		while (last->next != 0)
+		{
+			last = first->next;
+		}
+		return last;
+	}
+
+	static void Clear()
+	{
+		while (first != 0)
+		{
+			//CANListElement* nxt = first->next;
+			//delete first;
+			//first = nxt;
+			// интересно, какой вариант лучше?
+			// во втором варианте first всегда соответствует чему-то адекватному,
+			// в первом он некоторое время недоступен.
+			// во втором ничего лишнего удаляться не будет?..
+			CANListElement* cur = first;
+			first = first->next;
+			delete cur;
+		}
+	}
+};
+
 /**
  * Запрос на получение параметра. Формат данных в таком случае:
  * (0xFF) - (P) - (S) - (SS) - (SSS)
  */
 #define EC_PREQ		0xFF		// одиночный запрос параметра
-#define EC_PQUE		0xFA		// TODO : добавление параметра в список постоянной передачи
+#define EC_PQUE		0xFA		// добавление параметра в список постоянной передачи
+#define EC_PCLR		0xF9		// обнуление списка постоянной передачи
+
 
 #define EC_TIME		0xFE		// метка времени на момент прихода прерывания от зуба
 #define EC_TINJ		0xFD		// метка времени на момент впрыска

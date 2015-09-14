@@ -68,15 +68,80 @@ union CAN_DATA {
 Uint16 cylToCode(int nCyl);
 Uint16 cylToCodeX(int nCyl);
 
-/**
- * Пространство имён для всех глобальных переменных
- *
- * EG = ECU_GLOBAL
- */
-namespace EG
+struct ECU_State
 {
-	extern int cylChannel[DIESEL_N_CYL_MAX];	// массив сопоставлений между внутрипрограммными номерами цилиндров и номерами каналов
+	unsigned work : 1;		// блок работает штатно / не работает в связи с ошибкой
+	unsigned hall : 1;		// приходят ли сигналы с датчика Холла
+	unsigned warning : 1; 	// один из отслеживаемых параметров близок к ограничению
+	unsigned error : 1;		// один из отслеживаемых параметров вышел за ограничение
+};
 
+// параметр с потенциальными ограничениями
+class RestrictedValue
+{
+public:
+	float _val;
+	bool _restricted;
+	float _min;
+	float _max;
+	// добавить дополнительные границы?
+	// Дополнительные границы будут обозначать диапазон значений, в которых находиться
+	// нежелательно, но допустимо в течение ограниченного времени. При выходе за
+	// дополнительные границы ТОЧНО стоит остановить
+
+public:
+	RestrictedValue(float value = 0, bool restricted = 0, float minimum = 0, float maximum = 0)
+	{
+		_val = value;
+		_restricted = restricted;
+		_min = minimum;
+		_max = maximum;
+	}
+
+	int Check()	// проверка - всё ли хорошо (1) или всё плохо (0)
+	{
+		if (!_restricted)
+			return 1;
+
+		if ((_val > _max) || (_val < _min))
+			return 0;
+
+		return 1;
+	}
+
+	/*float GetValue()
+	{
+		//if (!restricted)
+			return value;
+
+		if (value > max)	// *1.05 - добавляем 5 %
+		{
+			return max;
+		}
+
+		if (value < min)	// *1.05 - добавляем 5 %
+		{
+			return min;
+		}
+	}*/
+
+	//void SetValue(float nvalue)
+	//{
+
+	//}
+};
+
+/**
+ * Пространство имён для глобальных переменных // для определения момента впрыска
+ *
+ * EG //I = ECU_GLOBAL //_INJECTION
+ */
+namespace EG //I
+{
+	extern Uint32 ecu_state;				// содержит код, характеризующий работу блока
+
+
+	extern int cylChannel[DIESEL_N_CYL_MAX];	// массив сопоставлений между внутрипрограммными номерами цилиндров и номерами каналов
 	extern float injPhi[DIESEL_N_CYL];		// угол, обозначающий момент впрыска
 	extern int injZ[DIESEL_N_CYL];			// зуб, начиная с которого
 	extern int dTime[DIESEL_N_CYL];			// время в мкс, которое отсчитывается от зуба
@@ -85,22 +150,30 @@ namespace EG
 	extern Uint32 injN[DIESEL_N_CYL];		// число прошедших впрысков
 	//extern bool injection;
 
+	extern Uint8 g_duty1;					// скважность форсирующего сигнала
+	extern Uint8 g_duty2;					// скважность удерживающего сигнала
+	extern Uint16 g_step1Us;				// продолжительность форсирующего сигнала, мкс
+	extern Uint16 g_step2Us;				// продолжительность удерживающего сигнала, мкс
+	extern Uint16 g_step3Us;				// промежуток времени для просмотра производной
+											// по току при переходе с форсирующего на удерживающий
+	extern Uint16 g_wakeup_High;			// продолжительность "пробуждающего" импульса для драйвера
+	extern Uint16 g_wakeup_Period;			// период "пробуждающего" импульса для драйвера
+//}
+
+/**
+ * Работа с текущим режимом
+ */
+//namespace EGN
+//{
 	extern float err, errI, errD;			// составляющие ошибки для расчёта подачи по ПИДу
 	extern float kP, kI, kD;				// коэффициенты ПИДа
-	extern float nR;						// текущая частота, об/мин
+	extern RestrictedValue nR;						// текущая частота, об/мин
+	extern float nR_max;					// верхнее ограничение для ЧВ
+	extern float nR_min;					// нижнее ограничение для ЧВ
 	extern float nU;						// уставка частоты, об/мин
 	extern float omegaR;					// текущая частота, рад/с
 	extern float QC, QCmin, QCmax;			// подача, кг/цикл, нижнее и верхнее ограничение
 	extern float QCadop, alphaDop;			// для ограничения по альфе
-	extern volatile Uint8 g_duty1;			// скважность форсирующего сигнала
-	extern volatile Uint8 g_duty2;			// скважность удерживающего сигнала
-	extern volatile Uint16 g_step1Us;		// продолжительность форсирующего сигнала, мкс
-	extern volatile Uint16 g_step2Us;		// продолжительность удерживающего сигнала, мкс
-	extern volatile Uint16 g_step3Us;		// промежуток времени для просмотра производной
-											// по току при переходе с форсирующего на удерживающий
-
-	extern Uint16 g_wakeup_High;			// продолжительность "пробуждающего" импульса для драйвера
-	extern Uint16 g_wakeup_Period;			// период "пробуждающего" импульса для драйвера
 
 	extern float muN;						// коэффициент темпа набора частоты вращения
 											// (по факту - темп изменения уставки)
@@ -108,7 +181,21 @@ namespace EG
 	extern float pInj;						// давление впрыска
 
 	extern float kQc;						// переводной коэффициент граммы-градусы-обороты
+	extern float pedal;						// положение педали (? с учётом перевода в частоту вращения?)
+	extern int finTime;						// время ожидания до выхода из режима EC_Finish после достижения 400 об/мин
 
+	extern float Pk;						// давление наддува (сейчас не используется)
+	extern float Tv;						// температура воздуха на входе
+
+	extern float anVMT;
+
+//}
+
+/**
+ * Флаги для управления различными аспектами программы
+ */
+//namespace EGM
+//{
 	extern int manQC;						// ручной режим задания подачи
 #define EG_MANQC_AUTO	0					// 0 - подача рассчитывается автоматически по ПИД-закону
 #define EG_MANQC_TIME	1					// 1 - подача никак не рассчитывается, используется число g_step2Us
@@ -143,15 +230,13 @@ namespace EG
 	extern int manLed;						// мигание светодиодами
 	extern int manSens;						// оцифровка датчиков (Pk, Tv...)
 	extern int pedStep;						// шаг изменения педали - округляется до этих значений
+//}
 
-	extern float pedal;						// положение педали (? с учётом перевода в частоту вращения?)
-	extern int finTime;						// время ожидания до выхода из режима EC_Finish после достижения 400 об/мин
-
-	extern float Pk;						// давление наддува (сейчас не используется)
-	extern float Tv;						// температура воздуха на входе
-
-	extern float anVMT;
-
+/**
+ * Переменные для работы с датчиками
+ */
+//namespace EGS
+//{
 	// переменные для опроса датчиков
 	extern float32 val;						// значение
 	extern Uint16 sens;						// тип датчика
@@ -185,18 +270,36 @@ namespace EG
 	extern float errRelayMax;				// ограничение изменения ошибки (в отрицательную сторону - рост частоты вращения), после к-го мы сбрасываем подачу
 	extern float QCprev;					// (не исп.) предыдущее значение подачи
 
-	extern tCANMsgObject canReceiveMessage;	// объект, определяющий приходящее по CAN сообщение
-	extern CAN_DATA canTransmitMessage;	// объект, определяющий приходящее по CAN сообщение
-	extern Uint8 canReceiveData[8];			// данные в приходящем сообщении
-
 	extern float32 fdbkBuf[FDBK_BUF];		// буфер для обратной связи с форсунками
 	extern int fdbkTBuf[FDBK_BUF];		// буфер для обратной связи с форсунками
 
+	extern int progCnt;
+	extern int fdbkTCnt;
+	extern int getFdbk;		// снимаем обратную связь
+
+	// вспомогательные переменные для снятия обратной связи
+	extern Uint16 n1;
+	extern Uint16 n2;
+	extern Uint16 n3;
+	extern Uint16 d1;
+	extern Uint16 d2;
+	extern Uint16 d3;
+//}
+
+/*
+ * Переменные для работы с CAN
+ */
+//namespace EGC
+//{
+extern tCANMsgObject canReceiveMessage;	// объект, определяющий приходящее по CAN сообщение
+	extern CAN_DATA canTransmitMessage;	// объект, определяющий приходящее по CAN сообщение
+	extern Uint8 canReceiveData[8];			// данные в приходящем сообщении
 	extern PAR_ID_BYTES canTransmitId[PARIDMAX];			// TODO : переделать на циклический список
 
 	extern CAN_DATA can_data;
 	extern int cntCanTransmit;
 	extern int cntCanTransmit2;
+	extern CANListElement* elCanTransmit;	// текущий элемент динамического списка
 	extern PAR_ID_BYTES curCanId;
 	extern int canLock;
 	extern int canLockM;
@@ -212,18 +315,6 @@ namespace EG
 
 	extern int tmpi;
 	extern PAR_ID_BYTES tparid;
-
-	extern int progCnt;
-	extern int fdbkTCnt;
-	extern int getFdbk;		// снимаем обратную связь
-
-	// вспомогательные переменные для снятия обратной связи
-	extern Uint16 n1;
-	extern Uint16 n2;
-	extern Uint16 n3;
-	extern Uint16 d1;
-	extern Uint16 d2;
-	extern Uint16 d3;
 }
 
 /**

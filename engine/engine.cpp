@@ -222,7 +222,7 @@ int EC_Engine::ModeCalc()
 #pragma CODE_SECTION("ramfuncs")
 Uint16 EC_Engine::QCtoUS(float qc)
 {
-	int tmp = qc/nR*1e9*kQc/HMLTP;
+	int tmp = qc/nR._val*1e9*kQc/HMLTP;
 	if (tmp > 0)
 	{
 		Uint16 step2 = tmp;
@@ -243,7 +243,7 @@ void EC_Engine::setInjPhi(void)
 		{
 			// угол впрыска с учётом угла опережения и поправкой на форсирующий импульс
 			injPhi[ii] = ii * DIESEL_PHI_MAX/DIESEL_N_CYL
-					 - EG::g_step1Us*EG::nR/S2US/60 * DIESEL_PHI_MAX;	//  ? какая у нас частота вращения?
+					 - EG::g_step1Us*EG::nR._val/S2US/60 * DIESEL_PHI_MAX;	//  ? какая у нас частота вращения?
 
 			// угол опережения
 			if (!EG::manOUVT)
@@ -255,7 +255,7 @@ void EC_Engine::setInjPhi(void)
 				}
 				else
 				{
-					injOuvt = EGD::OUVT->get(EG::QC, EG::nR*HMLTP) / HMLTP;
+					injOuvt = EGD::OUVT->get(EG::QC, EG::nR._val*HMLTP) / HMLTP;
 				}
 			}
 			injPhi[ii] += injOuvt + anVMT;
@@ -370,7 +370,7 @@ void EC_Engine::QCRestriction(void)
 {
 	// ОГРАНИЧЕНИЯ ПОДАЧИ
 	// 1. Скоростная характеристика
-	QCmax = EGD::SpChar->get(nR*HMLTP);
+	QCmax = EGD::SpChar->get(nR._val*HMLTP);
 	// 2. Пневмокоррекция
 	QCadop = Pk*18.29/(alphaDop*287.*Tv*14.3);
 

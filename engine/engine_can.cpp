@@ -28,6 +28,25 @@ PAR_ID_BYTES pid = canTransmitId[cntCanTransmit = 0];
 #pragma CODE_SECTION("ramfuncs")
 int EC_Engine::Monitoring(void)
 {
+	// проверяем ключевые переменные на выход за пределы
+	if (!nR.Check())
+	{
+		// останавливаем блок
+		// пока - отключаем впрыски
+		manInj = 1;
+		injOnce = 0;
+
+		// Предлагается сделать так:
+		// при выходе за границы начинает работать "взвешенный" счётчик.
+		// Системе даётся некоторое время (например, секунда, 1000 мс) и каждую мс
+		// из общего времени вычитают по n мс, где n зависит от отклонения параметра.
+		// Чем больше отклонение, тем быстрее вычитается время. Около границы по 1 мс,
+		// дальше по 2, 5, 10, 100, 1000 (если введу вторую границу, то это будет даже
+		// чётко обозначенная экспонента, иначе будем ориентироваться на %)
+		// При возвращении в допустимый диапазон обнуление счётчика должно быть не мгновенным,
+		// а постепенным - каждую мс нужно "возвращать" по мс.
+	}
+
 	// Общий режим оцифровки датчиков
 	if (!manSens)
 	{
@@ -37,26 +56,41 @@ int EC_Engine::Monitoring(void)
 
 	if (canSend)
 	{
-		if (!sendCanMsg(pid))
+		// НОВАЯ ВЕРСИЯ CAN
+		if (elCanTransmit)
 		{
-			// 0 - сan свободен, сообщение отправлено
-			if (manFdbk && (!fdbkAll) && (canTransmitId[cntCanTransmit].P == EC_P_M_FDBK) && (pid.S < FDBK_BUF))
+			// - отправляем сообщение с параметром, текущим в списке
+			if (!sendCanMsg(elCanTransmit->current))
 			{
-				fdbkLock = 1;
-				pid.S++;
-				if (pid.S == FDBK_BUF)
+				// - переходим на следующий параметр
+				// Проблема перебора кучи чисел, соответствующих одному параметру, остаётся открытой.
+				// Когда приспичит, можно будет сделать как раньше - изменяем индекс у current, относящемуся к данном PIB
+				elCanTransmit = elCanTransmit->next;
+				if (!elCanTransmit)
 				{
-					fdbkAll = 1;
+					elCanTransmit = CANListElement::first;
 				}
-			} else {
-				cntCanTransmit++;
-				// если дошли до конца списка - сбрасываем
-				if (cntCanTransmit == PARIDMAX)
+
+				// СТАРАЯ ВЕРСИЯ
+				// 0 - сan свободен, сообщение отправлено
+				/*if (manFdbk && (!fdbkAll) && (canTransmitId[cntCanTransmit].P == EC_P_M_FDBK) && (pid.S < FDBK_BUF))
 				{
-					cntCanTransmit = 0;
-				}
-				pid = canTransmitId[cntCanTransmit];
-				fdbkLock = 0;
+					fdbkLock = 1;
+					pid.S++;
+					if (pid.S == FDBK_BUF)
+					{
+						fdbkAll = 1;
+					}
+				} else {
+					cntCanTransmit++;
+					// если дошли до конца списка - сбрасываем
+					if (cntCanTransmit == PARIDMAX)
+					{
+						cntCanTransmit = 0;
+					}
+					pid = canTransmitId[cntCanTransmit];
+					fdbkLock = 0;
+				}*/
 			}
 		}
 	}
@@ -188,7 +222,7 @@ int EC_Engine::sendCanMsg(PAR_ID_BYTES id)
 	case EC_G_N:
 		switch (id.S)
 		{
-		case EC_S_NR: data.f.val.f = EG::nR; break;
+		case EC_S_NR: data.f.val.f = EG::nR._val; break;
 		case EC_S_NU: data.f.val.f = EG::nU; break;
 		case EC_S_OMEGA: data.f.val.f = EG::omegaR; break;
 		case EC_S_DTIME: data.f.val.f = delta_time; break;
@@ -362,6 +396,17 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 
 	switch (msg->pucMsgData[0])
 	{
+	case EC_PQUE:	// добавление параметра в очередь
+	{
+		// - создаём новый объект
+		PAR_ID_BYTES pid = {msg->pucMsgData[1],msg->pucMsgData[2]};
+		CANListElement* newEl = new CANListElement(pid,	CANListElement::Last());
+		//
+		break;
+	}
+	case EC_PCLR:
+		CANListElement::Clear();
+		break;
 	case EC_PREQ: // запрос параметра
 		if (canSend)
 		{

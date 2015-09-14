@@ -107,7 +107,7 @@ __interrupt void xint1_isr(void)
 
 		nR = omegaR*30/PI;	// пересчЄт в об/мин
 
-		errN = nU - nR;		// текуща€ ошибка
+		errN = nU - nR._val;		// текуща€ ошибка
 		errD = (errN - err) / delta_time;	// производна€ от ошибки
 
 		// считаем интегральную составл€ющую с учЄтом ограничени€

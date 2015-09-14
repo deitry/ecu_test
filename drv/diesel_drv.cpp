@@ -338,12 +338,13 @@ DIESEL_STATUS getSensor(Uint16 sensor, Uint8 channel, float32 &value)
 	switch (sensor)
 	{
 	case PRESSURE_SENSOR:
+	{
 		// Vref = 5.0, Max ADC code = 4095
 		float32 pressureU = adcCode * 5.0 / 4095.0;
 		// Формула выведена из граничных значений датчика (линейная зависимость) (min 0.2V=20kPa, max 4.9V=250kPa)
 		value = (230.0 * pressureU + 48.0) / 4.7;
 		break;
-
+	}
 	case INJECTOR_SENSOR:
 		value = adcCode * 5.0 / 4095.0;		// Vref = 5V
 		break;
@@ -354,10 +355,11 @@ DIESEL_STATUS getSensor(Uint16 sensor, Uint8 channel, float32 &value)
 		
 	case TEMPERATURE_SENSOR:
 	case POTENTIO_SENSOR:
+	{
 		float32 tempPotU = adcCode * 4.096 / 65535.0;
 		value = (tempPotU - 2.5) / gain / 0.00107;			// R = (U-2.5)/1.07mA; 2.5V - напряжение поднято коэффициентом усиления
 		break;
-
+	}
 	default:
 		value = adcCode * 4.096 / 65535.0;	// Vref = 4.096
 	}

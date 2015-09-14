@@ -28,7 +28,7 @@ int EC_Engine::Start()
 			}
 
 			// условие выхода
-			if (fabs(nU-nR) < 1)
+			if (fabs(nU-nR._val) < 1)
 			{
 				this->mode = EC_Steady;
 				return 0;

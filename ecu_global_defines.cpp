@@ -32,7 +32,9 @@ float EG::kP = 1e-5;
 float EG::kI = 2e-6;
 float EG::kD = 2e-6;
 
-float EG::nR = 400/HMLTP;
+//float EG::nR = 400/HMLTP;
+RestrictedValue EG::nR(400/HMLTP, 1, 10, 10000);
+
 float EG::nU = 400/HMLTP;
 float EG::omegaR = 0;
 
@@ -45,11 +47,11 @@ float EG::QCadop = 0.0028;
 float EG::alphaDop = 1.3;
 float EG::kQc = 2.3622;
 
-volatile Uint8 EG::g_duty1 = 50;
-volatile Uint8 EG::g_duty2 = 10;
-volatile Uint16 EG::g_step1Us = 1300;
-volatile Uint16 EG::g_step2Us = 5000;
-volatile Uint16 EG::g_step3Us = 100;
+Uint8 EG::g_duty1 = 50;
+Uint8 EG::g_duty2 = 10;
+Uint16 EG::g_step1Us = 1300;
+Uint16 EG::g_step2Us = 5000;
+Uint16 EG::g_step3Us = 100;
 
 Uint16 EG::g_wakeup_High = 1;			// продолжительность "пробуждающего" импульса для драйвера, LSB = 20ns
 Uint16 EG::g_wakeup_Period = 1;			// период "пробуждающего" импульса для драйвера, LSB = 1us
@@ -160,6 +162,9 @@ Uint8 EG::canReceiveData[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 tCANMsgObject EG::canReceiveMessage;
 CAN_DATA EG::canTransmitMessage;
 
+
+CANListElement* CANListElement::first = 0;
+CANListElement* EG::elCanTransmit = 0;
 PAR_ID_BYTES EG::canTransmitId[PARIDMAX] =
 {
 	{0x01,0x00},
