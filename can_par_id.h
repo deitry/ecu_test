@@ -40,6 +40,8 @@ public:
 	CANListElement(PAR_ID_BYTES id, CANListElement* parent = 0)
 	{
 		current = id;
+		next = 0;
+
 		if (!parent)
 		{
 			parent = Last();
@@ -58,9 +60,11 @@ public:
 	static CANListElement* Last()
 	{
 		CANListElement* last = first;
+		if (!last) return 0;
+
 		while (last->next != 0)
 		{
-			last = first->next;
+			last = last->next;
 		}
 		return last;
 	}

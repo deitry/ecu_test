@@ -401,6 +401,10 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 		// - создаём новый объект
 		PAR_ID_BYTES pid = {msg->pucMsgData[1],msg->pucMsgData[2]};
 		CANListElement* newEl = new CANListElement(pid,	CANListElement::Last());
+		if (!elCanTransmit)
+		{
+			elCanTransmit = CANListElement::first;
+		}
 		//
 		break;
 	}
