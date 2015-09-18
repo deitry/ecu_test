@@ -99,7 +99,7 @@ public:
 #define EC_TIME		0xFE		// метка времени на момент прихода прерывания от зуба
 #define EC_TINJ		0xFD		// метка времени на момент впрыска
 #define EC_TPROG	0xFC		// метка времени на новом цикле программы
-
+#define EC_THALL	0xF8		// метка времени на "нулевом" зубе
 
 #define EC_P0		0x00
 

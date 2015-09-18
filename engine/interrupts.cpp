@@ -140,6 +140,9 @@ __interrupt void xint1_isr(void)
 			sw = 0;
 		}
 
+		//tPid.P = EC_THALL;
+		//engine->sendCanMsg(tPid);
+
 		nCnt++;
 	}
 
