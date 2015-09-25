@@ -33,14 +33,16 @@ class CANListElement
 public:
 	PAR_ID_BYTES current;
 	CANListElement* next;
+	//bool single;	// один раз отправили, можно из списка удалить
 
 	static CANListElement* first;	// всегда храним ссылку на первый элемент, чтобы проще было искать концы, если что
 
 public:
-	CANListElement(PAR_ID_BYTES id, CANListElement* parent = 0)
+	CANListElement(PAR_ID_BYTES id, CANListElement* parent = 0) //,isSingle= false
 	{
 		current = id;
 		next = 0;
+		//single = isSingle;
 
 		if (!parent)
 		{
@@ -91,7 +93,7 @@ public:
  * «апрос на получение параметра. ‘ормат данных в таком случае:
  * (0xFF) - (P) - (S) - (SS) - (SSS)
  */
-#define EC_PREQ		0xFF		// одиночный запрос параметра
+#define EC_PREQ		0xFB		// одиночный запрос параметра
 #define EC_PQUE		0xFA		// добавление параметра в список посто€нной передачи
 #define EC_PCLR		0xF9		// обнуление списка посто€нной передачи
 
@@ -103,7 +105,7 @@ public:
 
 #define EC_P0		0x00
 
-#define EC_BAD		0xFFFF
+#define EC_BAD		0xFF
 /**
  * –асшифровка сокращений:
  * - EC = Electronic Control
