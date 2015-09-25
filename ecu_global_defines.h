@@ -313,6 +313,8 @@ extern tCANMsgObject canReceiveMessage;	// объект, определ€ющий приход€щее по CA
 	extern Uint16 nCnt;		// счЄтчик оборотов
 	extern Uint32 timeCnt;		// счЄтчик времени
 
+	extern PAR_ID_BYTES singlePID;	// идентификатор переменной дл€ одиночного запроса
+
 	extern int tmpi;
 	extern PAR_ID_BYTES tparid;
 }

@@ -59,10 +59,28 @@ int EC_Engine::Monitoring(void)
 		// НОВАЯ ВЕРСИЯ CAN
 		if (elCanTransmit)
 		{
+			// - если есть параметр для "разовой отправки", отправляем его
+			for (int i = 0; i < 2000; i++);
+
+			if (singlePID.P != EC_BAD)
+			{
+				if (!sendCanMsg(singlePID))
+				{
+					singlePID.P = EC_BAD;
+					singlePID.S = 0;
+				}
+			}
 			// - отправляем сообщение с параметром, текущим в списке
-			if (!sendCanMsg(elCanTransmit->current))
+			else if (!sendCanMsg(elCanTransmit->current))
 			{
 				// - переходим на следующий параметр
+				// - если параметр "разовый", вычёркиваем его из списка
+				//if (elCanTransmit->single)
+				//{
+				//	CANListElement* cur = elCanTransmit;
+				//	elCanTransmit = elCanTransmit->next;
+				//	delete cur;
+				//}
 				// Проблема перебора кучи чисел, соответствующих одному параметру, остаётся открытой.
 				// Когда приспичит, можно будет сделать как раньше - изменяем индекс у current, относящемуся к данном PIB
 				elCanTransmit = elCanTransmit->next;
@@ -92,6 +110,7 @@ int EC_Engine::Monitoring(void)
 					fdbkLock = 0;
 				}*/
 			}
+			for (int i = 0; i < 2000; i++);
 		}
 	}
 
@@ -412,24 +431,29 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 		CANListElement::Clear();
 		break;
 	case EC_PREQ: // запрос параметра
-		if (canSend)
-		{
-			EG::canTransmitId[PARIDMAX-1].P = msg->pucMsgData[1];
-			EG::canTransmitId[PARIDMAX-1].S = msg->pucMsgData[2];
-		}
-		else
-		{
-			if (sendCanMsg(tparid))
-			{
-				if (canLock)
-				{
-					canLock *= 500;
-					while (canLock--);
-				}
-				sendCanMsg(tparid);
-			}
-		}
+		//if (canSend)
+		//{
+		//	EG::canTransmitId[PARIDMAX-1].P = msg->pucMsgData[1];
+		//	EG::canTransmitId[PARIDMAX-1].S = msg->pucMsgData[2];
+		//}
+		//else
+	{
+		//DELAY_US(1);
+		singlePID.P = msg->pucMsgData[1];
+		singlePID.S = msg->pucMsgData[2];
+		//PAR_ID_BYTES pid = {,};
+		//if (sendCanMsg(pid))
+		//{
+		//	if (canLock)
+		//	{
+		//		canLock *= 500;
+		//		while (canLock--);
+		//	}
+		//	sendCanMsg(pid);
+		//}
+		//DELAY_US(1);
 		break;
+	}
 	case EC_P_MODE:
 	{
 		if (can_data.f.val.i <= EC_MAX_MODE)

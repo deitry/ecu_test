@@ -264,3 +264,7 @@ FMField1* EGD::QCStart = new FMField1;
 PAR_ID_BYTES EG::tPid = {
 		EC_TIME, 0
 };
+
+PAR_ID_BYTES EG::singlePID = {
+		EC_BAD, 0
+};

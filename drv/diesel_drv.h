@@ -41,7 +41,7 @@ extern "C" {
 
 #define CURR_SENS_CHANNEL_1	0x00
 #define CURR_SENS_CHANNEL_2	0x01
-#define CURR_SENS_CHANNEL_3	0x02
+#define CURR_SENS_CHANNEL_3	0x02		// давление масла
 #define CURR_SENS_CHANNEL_4	0x03
 #define CURR_SENS_CHANNEL_5	0x04
 #define CURR_SENS_CHANNEL_6	0x05
