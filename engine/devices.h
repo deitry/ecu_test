@@ -36,15 +36,16 @@ protected:
 	Uint16 _sens;		// тип датчика
 	float32 _min;		// минимальное значение
 	float32 _max;		// максимальное значение
-	float _k;	// коэффициент перевода в соотв. единицы
+	float _k;			// коэффициент перевода в соотв. единицы
+	float _b;			// ещё коэффициент для y = kx + b
 	float32 _val;		// сохранённое значение последнего запроса
 	
 	// int failedCkeckCnt;	// количество проваленных проверок.
 		// При превышении некоторого числа устройство считается не рабочим
 	
 public:
-	EC_Device(Uint16 sens, Uint8 chan, float32 min, float32 max, float k) :
-		_sens(sens), _chan(chan), _min(min/k), _max(max/k), _k(k), _val(0) {}
+	EC_Device(Uint16 sens, Uint8 chan, float32 min, float32 max, float k, float b)
+		: _sens(sens), _chan(chan), _min((min-b)/k), _max((max-b)/k), _k(k), _b(b), _val(0) {}
 
 
 	//virtual int Type();
@@ -78,8 +79,8 @@ public:
 class EC_Actuator : EC_Device
 {
 public:
-	EC_Actuator(Uint16 sens, Uint8 chan, float32 min, float32 max, float k)
-		: EC_Device(sens, chan, min, max, k) {};
+	EC_Actuator(Uint16 sens, Uint8 chan, float32 min, float32 max, float k, float b)
+		: EC_Device(sens, chan, min, max, k, b) {};
 
 	int Type() {return EC_DTYPE_ACTUATOR;}
 	void setValue(float val);	// скорее всего, взаимодействие с устройствами будет
@@ -99,8 +100,8 @@ public:
 
 	static const int F_PREVIOUS = 1;	// при выходе за ограничения в качестве текущего значения берётся предыдущее
 
-	EC_Sensor(Uint16 sens, Uint8 chan, float32 min, float32 max, float k, int filter)
-		: EC_Device(sens, chan, min, max, k), _filter(filter) {};
+	EC_Sensor(Uint16 sens, Uint8 chan, float32 min, float32 max, float k, float b, int filter)
+		: EC_Device(sens, chan, min, max, k, b), _filter(filter) {};
 
 	int Check();
 	int Type() {return EC_DTYPE_SENSOR;}

@@ -15,7 +15,7 @@ typedef bool _Bool;
 #include "drv/can_if.h"
 #include "can_par_id.h"
 
-#define HALL_CRANKSHAFT		0				// какой вал используется. 0 - распределительный, 1 - коленчатый (частый)
+#define HALL_CRANKSHAFT		1				// какой вал используется. 0 - распределительный, 1 - коленчатый (частый)
 #define HMLTP				(HALL_CRANKSHAFT ? 1 : 2)	// Hall MuLTiPlier
 #define HALL_POLARITY		0				// 1 - прерывания по передним фронтам, 0 - по задним фронтам
 
@@ -23,7 +23,7 @@ typedef bool _Bool;
 #define DIESEL_N_CYL_MAX	12			// максимально возможное количество цилиндров для данной версии блока
 #define DIESEL_D_ZONE		0.5			// зона нечувствительности регулятора - лучше сделать переменной
 #define DIESEL_Z_CUT		1			// количество вырезанных зубов
-#define DIESEL_Z_ALL		45			// общее количество зубов с учётом вырезанных
+#define DIESEL_Z_ALL		120			// общее количество зубов с учётом вырезанных
 #define DIESEL_Z_PHI		(360/DIESEL_Z_ALL)		// угол от одного зуба до другого
 #define DIESEL_Z_MAX		(DIESEL_Z_ALL-DIESEL_Z_CUT) 	// количество присутствующих зубов
 #define DIESEL_PHI_MAX		(720/HMLTP)		// угол поворота за цикл (два оборота)
@@ -178,7 +178,7 @@ namespace EG //I
 	extern float muN;						// коэффициент темпа набора частоты вращения
 											// (по факту - темп изменения уставки)
 
-	extern float pInj;						// давление впрыска
+	extern float Pinj;						// давление впрыска
 
 	extern float kQc;						// переводной коэффициент граммы-градусы-обороты
 	extern float pedal;						// положение педали (? с учётом перевода в частоту вращения?)
@@ -242,7 +242,8 @@ namespace EG //I
 	extern Uint16 sens;						// тип датчика
 	extern Uint8 chan;						// канал
 
-	extern float delta_time;
+	extern float delta_time;				// разница времени между текущим и предыдущим зубом
+	extern float delta_time1;				// разница во времени между сигналом датчика синхронизации и предыдущим зубом
 	extern float int_time;
 	extern float int_time1;
 	extern Uint32 ttim;

@@ -184,13 +184,25 @@ __interrupt void xint1_isr(void)
 }
 
 /**
- * Датчик частоты коленвала (частый)
- * - измерение частоты вращения
+ * Датчик "синхронизации" - служит для определения ВМТ.
+ * На используемом двигателе
  */
 #pragma CODE_SECTION("ramfuncs")
 __interrupt void xint2_isr(void)
 {
-	if (!sw) sw = 1;
+	sw = 0; 	// если зуб синхронизации отстоит на 38 градусов вперёд после вмт нулевого цилиндра, то это соответствует "0"-му циклу чётности
+		// если зуб будет до ВМТ, то sw = 1;
+		// инвертирование происходит в обработчике XINT1
+
+	// по номеру текущего зуба с точностью до зуба определяем ВМТ
+	anVMT = DIESEL_Z_PHI * zCnt;
+
+	// по текущей частоте вращения и времени, прошедшему с последнего xint1 (последнего пришедшего фронта зуба) оцениваем коррекцию угла
+	delta_time1 = ((float) (CpuTimer0Regs.PRD.all-CpuTimer0Regs.TIM.all))
+						/ (S2US*TIMER_FREQ);
+	anVMT += omegaN * delta_time1 / PI * 180;
+
+	//if (!sw) sw = 1;
 	// Acknowledge this interrupt to get more from group 1
 	PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
 }

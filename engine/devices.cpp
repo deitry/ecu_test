@@ -27,7 +27,7 @@ float EC_Sensor::getValue()
 			_val = val*0.2 + _val*0.8;
 		break;
 	}
-	return _val * _k;
+	return _val * _k + _b;
 }
 
 int EC_Sensor::Check()
@@ -42,6 +42,7 @@ int EC_Sensor::Check()
 
 void EC_Actuator::setValue(float val)
 {
+	// _b никак не учитывается
 	_val = val / _k;
 	
 	if (_min > _val)

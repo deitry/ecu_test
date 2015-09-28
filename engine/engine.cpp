@@ -29,10 +29,10 @@ EC_Engine::EC_Engine()
 	hard->Initialise();
 
 	devices = new EC_DeviceList();
-	devices->addDevice(EC_S_D_PEDAL, (EC_Device*) new EC_Sensor(TEMPERATURE_SENSOR, TEMP_SENS_CHANNEL_2, 0, 10000, 2.77 * 5 / HMLTP, 1));
-	devices->addDevice(EC_S_D_PK, (EC_Device*) new EC_Sensor(CURRENT_SENSOR, TEMP_SENS_CHANNEL_8, 100, 500, 1640, 1));
-	devices->addDevice(EC_S_D_TV, (EC_Device*) new EC_Sensor(CURRENT_SENSOR, CURR_SENS_CHANNEL_7, 220, 500, 1464, 1));
-	//devices->addDevice(EC_S_D_PINJ, (EC_Device*) new EC_Sensor(CURRENT_SENSOR, TEMP_SENS_CHANNEL_6, 0, 10000, 1));
+	devices->addDevice(EC_S_D_PEDAL, (EC_Device*) new EC_Sensor(TEMPERATURE_SENSOR, TEMP_SENS_CHANNEL_2, 0, 10000, 2.77 * 5 / HMLTP, 0, 1));
+	devices->addDevice(EC_S_D_PK, (EC_Device*) new EC_Sensor(CURRENT_SENSOR, TEMP_SENS_CHANNEL_8, 100, 500, 1640, 0, 1));
+	devices->addDevice(EC_S_D_TV, (EC_Device*) new EC_Sensor(CURRENT_SENSOR, CURR_SENS_CHANNEL_7, 220, 500, 1464, 0, 1));
+	devices->addDevice(EC_S_D_PINJ, (EC_Device*) new EC_Sensor(CURRENT_SENSOR, CURR_SENS_CHANNEL_3, -1, 16, 63.69426752, -4.292993631, 1));
 }
 
 //#pragma CODE_SECTION("ramfuncs")

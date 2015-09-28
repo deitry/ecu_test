@@ -52,6 +52,7 @@ int EC_Engine::Monitoring(void)
 	{
 		Pk = this->devices->getDevice(EC_S_D_PK)->getValue();
 		Tv = this->devices->getDevice(EC_S_D_TV)->getValue();
+		Pinj = this->devices->getDevice(EC_S_D_PINJ)->getValue();
 	}
 
 	if (canSend)
@@ -60,7 +61,7 @@ int EC_Engine::Monitoring(void)
 		if (elCanTransmit)
 		{
 			// - если есть параметр для "разовой отправки", отправляем его
-			for (int i = 0; i < 2000; i++);
+			for (int i = 0; i < 2000; i++);	// задержка до и после отправки нужна, чтобы сообщения успевали отправляться, не мешая друг другу
 
 			if (singlePID.P != EC_BAD)
 			{
@@ -74,13 +75,6 @@ int EC_Engine::Monitoring(void)
 			else if (!sendCanMsg(elCanTransmit->current))
 			{
 				// - переходим на следующий параметр
-				// - если параметр "разовый", вычёркиваем его из списка
-				//if (elCanTransmit->single)
-				//{
-				//	CANListElement* cur = elCanTransmit;
-				//	elCanTransmit = elCanTransmit->next;
-				//	delete cur;
-				//}
 				// Проблема перебора кучи чисел, соответствующих одному параметру, остаётся открытой.
 				// Когда приспичит, можно будет сделать как раньше - изменяем индекс у current, относящемуся к данном PIB
 				elCanTransmit = elCanTransmit->next;
@@ -88,27 +82,6 @@ int EC_Engine::Monitoring(void)
 				{
 					elCanTransmit = CANListElement::first;
 				}
-
-				// СТАРАЯ ВЕРСИЯ
-				// 0 - сan свободен, сообщение отправлено
-				/*if (manFdbk && (!fdbkAll) && (canTransmitId[cntCanTransmit].P == EC_P_M_FDBK) && (pid.S < FDBK_BUF))
-				{
-					fdbkLock = 1;
-					pid.S++;
-					if (pid.S == FDBK_BUF)
-					{
-						fdbkAll = 1;
-					}
-				} else {
-					cntCanTransmit++;
-					// если дошли до конца списка - сбрасываем
-					if (cntCanTransmit == PARIDMAX)
-					{
-						cntCanTransmit = 0;
-					}
-					pid = canTransmitId[cntCanTransmit];
-					fdbkLock = 0;
-				}*/
 			}
 			for (int i = 0; i < 2000; i++);
 		}
@@ -344,6 +317,7 @@ int EC_Engine::sendCanMsg(PAR_ID_BYTES id)
 		case EC_P0: data.f.val.i = EG::manSens; break;
 		case EC_S_D_PK: data.f.val.f = EG::Pk; break;
 		case EC_S_D_TV: data.f.val.f = EG::Tv; break;
+		case EC_S_D_PINJ: data.f.val.f = EG::Pinj; break;
 		}
 		break;
 	case EC_P_KP:
@@ -558,6 +532,7 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 		case EC_P0: EG::manSens = can_data.f.val.i; break;
 		case EC_S_D_PK: EG::Pk = can_data.f.val.f; break;
 		case EC_S_D_TV: EG::Tv = can_data.f.val.f; break;
+		case EC_S_D_PINJ: EG::Pinj = can_data.f.val.f; break;
 		}
 		break;
 	case EC_P_KP:

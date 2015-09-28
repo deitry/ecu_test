@@ -256,13 +256,13 @@ void EC_Hardware::SetupInterrupts(void)
 	ERTM;  					// Enable Global real-time interrupt DBGM
 
 	// связывание внешних прерываний
-	GPIO_SetupXINT1Gpio(84);
+	GPIO_SetupXINT1Gpio(86);
 	XintRegs.XINT1CR.bit.POLARITY = HALL_POLARITY;      // 0 - Falling edge interrupt
 	XintRegs.XINT1CR.bit.ENABLE = 1;        // Enable XINT1
 
 	if (HALL_CRANKSHAFT)
 	{
-		GPIO_SetupXINT2Gpio(86);
+		GPIO_SetupXINT2Gpio(84);
 		XintRegs.XINT2CR.bit.POLARITY = HALL_POLARITY;      // 1 - Rising edge interrupt
 		XintRegs.XINT2CR.bit.ENABLE = 1;        // Enable XINT2
 	}

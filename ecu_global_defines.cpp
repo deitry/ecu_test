@@ -38,7 +38,7 @@ RestrictedValue EG::nR(400/HMLTP, 1, 10, 10000);
 float EG::nU = 400/HMLTP;
 float EG::omegaR = 0;
 
-float EG::pInj = 0;
+float EG::Pinj = 0;
 
 float EG::QC = 1e-4;
 float EG::QCmin = 1e-5;
@@ -99,6 +99,7 @@ int EG::manLed = 0;
 int EG::manSens = 0;
 
 float EG::delta_time = 0.0;
+float EG::delta_time1 = 0.0;
 Uint32 EG::ttim = 0;
 
 float EG::int_time = 0.0;
