@@ -67,8 +67,19 @@ void EC_Engine::setQCTrans(void)
 {
 	if (fabs(err) > EG::dZone)
 	{
-		// пид-закон
 		QCprev = QC;
-		QC = kP*err + kI*errI + kD*errD;
+
+		if (fabs(err) < EG::dZone1)
+		{
+			// зона пониженной чувствительности - дл€ улучшени€ стабильности
+			QC = PIDstab*(kP*err + kD*errD) + kI*errI; // интегральна€ составл€юща€ корректируетс€ за счЄт снижени€ темпа набора errI
+			// добавить сглаживание?
+		}
+		else
+		{
+			// пид-закон
+			QC = kP*err + kI*errI + kD*errD;
+			// добавить сглаживание?
+		}
 	}
 }

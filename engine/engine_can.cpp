@@ -29,7 +29,7 @@ PAR_ID_BYTES pid = canTransmitId[cntCanTransmit = 0];
 int EC_Engine::Monitoring(void)
 {
 	// проверяем ключевые переменные на выход за пределы
-	if (!nR.Check())
+	if (!nR.Check() || !Pinj.Check())
 	{
 		// останавливаем блок
 		// пока - отключаем впрыски
@@ -52,7 +52,7 @@ int EC_Engine::Monitoring(void)
 	{
 		Pk = this->devices->getDevice(EC_S_D_PK)->getValue();
 		Tv = this->devices->getDevice(EC_S_D_TV)->getValue();
-		Pinj = this->devices->getDevice(EC_S_D_PINJ)->getValue();
+		Pinj._val = this->devices->getDevice(EC_S_D_PINJ)->getValue();
 	}
 
 	if (canSend)
@@ -317,7 +317,7 @@ int EC_Engine::sendCanMsg(PAR_ID_BYTES id)
 		case EC_P0: data.f.val.i = EG::manSens; break;
 		case EC_S_D_PK: data.f.val.f = EG::Pk; break;
 		case EC_S_D_TV: data.f.val.f = EG::Tv; break;
-		case EC_S_D_PINJ: data.f.val.f = EG::Pinj; break;
+		case EC_S_D_PINJ: data.f.val.f = EG::Pinj._val; break;
 		}
 		break;
 	case EC_P_KP:
@@ -439,7 +439,7 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 	case EC_G_N:
 		switch (msg->pucMsgData[1])
 		{
-		case EC_S_NR: EG::nR = can_data.f.val.f; break;
+		case EC_S_NR: EG::nR._val = can_data.f.val.f; break;
 		case EC_S_NU: EG::nU = can_data.f.val.f; break;
 		case EC_S_OMEGA: EG::omegaR = can_data.f.val.f; break;
 		case EC_S_DTIME: delta_time = can_data.f.val.f; break;
@@ -532,7 +532,7 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 		case EC_P0: EG::manSens = can_data.f.val.i; break;
 		case EC_S_D_PK: EG::Pk = can_data.f.val.f; break;
 		case EC_S_D_TV: EG::Tv = can_data.f.val.f; break;
-		case EC_S_D_PINJ: EG::Pinj = can_data.f.val.f; break;
+		case EC_S_D_PINJ: EG::Pinj._val = can_data.f.val.f; break;
 		}
 		break;
 	case EC_P_KP:
@@ -541,7 +541,7 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 	case EC_P_KI:
 		if (EG::kI != 0)
 		{
-			EG::errI *= can_data.f.val.f/EG::kI;
+			EG::errI *= EG::kI/can_data.f.val.f;
 		}
 		EG::kI = can_data.f.val.f;
 		break;

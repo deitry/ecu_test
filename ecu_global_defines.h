@@ -46,6 +46,8 @@ typedef bool _Bool;
 #define 	S2US			1e6		// секунды в микросекунды
 #define 	PI				(3.1416)
 
+//#define 	ERRI_MAX		0.0032
+
 
 union CAN_DATA_VAL {
 	double f;
@@ -90,24 +92,9 @@ public:
 	// дополнительные границы ТОЧНО стоит остановить
 
 public:
-	RestrictedValue(float value = 0, bool restricted = 0, float minimum = 0, float maximum = 0)
-	{
-		_val = value;
-		_restricted = restricted;
-		_min = minimum;
-		_max = maximum;
-	}
+	RestrictedValue(float value, bool restricted, float minimum, float maximum);
 
-	int Check()	// проверка - всё ли хорошо (1) или всё плохо (0)
-	{
-		if (!_restricted)
-			return 1;
-
-		if ((_val > _max) || (_val < _min))
-			return 0;
-
-		return 1;
-	}
+	int Check();	// проверка - всё ли хорошо (1) или всё плохо (0)
 
 	/*float GetValue()
 	{
@@ -166,20 +153,21 @@ namespace EG //I
 //namespace EGN
 //{
 	extern float err, errI, errD;			// составляющие ошибки для расчёта подачи по ПИДу
+	extern float errImax, errImax1;					// ограничение интеграла
 	extern float kP, kI, kD;				// коэффициенты ПИДа
 	extern RestrictedValue nR;						// текущая частота, об/мин
 	extern float nR_max;					// верхнее ограничение для ЧВ
 	extern float nR_min;					// нижнее ограничение для ЧВ
 	extern float nU;						// уставка частоты, об/мин
 	extern float omegaR;					// текущая частота, рад/с
-	extern float QC, QCmin, QCmax;			// подача, кг/цикл, нижнее и верхнее ограничение
+	extern float QC, QCmin, QCmax, QCsp;			// подача, кг/цикл, нижнее и верхнее ограничение
 	extern float QCadop, alphaDop;			// для ограничения по альфе
 
 	extern float muN;						// коэффициент темпа набора частоты вращения
 											// (по факту - темп изменения уставки)
 
-	extern float Pinj;						// давление впрыска
-
+	//extern float Pinj;						// давление впрыска
+	extern RestrictedValue Pinj;
 	extern float kQc;						// переводной коэффициент граммы-градусы-обороты
 	extern float pedal;						// положение педали (? с учётом перевода в частоту вращения?)
 	extern int finTime;						// время ожидания до выхода из режима EC_Finish после достижения 400 об/мин
@@ -266,6 +254,8 @@ namespace EG //I
 	extern float nU0;						// исходная уставка (? сделать частотой холостого хода?)
 
 	extern float dZone;						// зона нечувствительности ПИДа
+	extern float dZone1;					// зона ПИДа, в пределах которой чувствительность снижается на 0.6
+	extern float PIDstab;					// коэффициент, на который домножаются к-ты ПИДа в пределах dZone1
 	extern float dOmega;					// приращение частоты вращения
 	//extern float errDMax;					// (не исп.) верхнее ограничение производной от ошибки
 	extern float errRelayMax;				// ограничение изменения ошибки (в отрицательную сторону - рост частоты вращения), после к-го мы сбрасываем подачу

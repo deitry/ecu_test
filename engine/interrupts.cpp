@@ -105,20 +105,19 @@ __interrupt void xint1_isr(void)
 		dOmega = (omegaN - omegaP)/delta_time;	// производна€
 		omegaP = omegaR;
 
-		nR = omegaR*30/PI;	// пересчЄт в об/мин
+		nR._val = omegaR*30/PI;	// пересчЄт в об/мин
 
 		errN = nU - nR._val;		// текуща€ ошибка
 		errD = (errN - err) / delta_time;	// производна€ от ошибки
 
 		// считаем интегральную составл€ющую с учЄтом ограничени€
-		// ¬ качестве ограничени€ выбрано минимальное из QCmax (константа) и QCadop (по альфе) [engine.cpp - ModeCalc()]
-		if ((fabs((errI + errN*delta_time)*kI) <= QCmax))	// && (fabs(dOmega) < errDMax)
+		if ((fabs((errI + errN*delta_time)*kI) <= errImax)	// && (fabs(dOmega) < errDMax)
 		{
-			errI = errI + errN*delta_time;
-		} else if (fabs(errI*kI) > QCmax) {
+			errI = errI + errN*delta_time * ((err < dZone1) ? PIDstab : 1));
+		} else if (fabs(errI*kI) > errImax {
 			// чтобы предотвратить выбег интегральной составл€ющей при резком изменении QCmax,
 			// приравниваем интегральную ошибку ограничению с учЄтом текущего знака
-			errI *= QCmax / kI / fabs(errI);
+			errI *= errImax / kI / fabs(errI);
 		}
 
 		err = errN;

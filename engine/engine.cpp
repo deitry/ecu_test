@@ -370,13 +370,13 @@ void EC_Engine::QCRestriction(void)
 {
 	// ОГРАНИЧЕНИЯ ПОДАЧИ
 	// 1. Скоростная характеристика
-	QCmax = EGD::SpChar->get(nR._val*HMLTP);
+	QCsp = EGD::SpChar->get(nR._val*HMLTP);
 	// 2. Пневмокоррекция
 	QCadop = Pk*18.29/(alphaDop*287.*Tv*14.3);
 
 	// ПРИМЕНЕНИЕ ОГРАНИЧЕНИЙ
 	// - для QCmax выбираем минимальное
-	QCmax = ((QCmax < QCadop) ? QCmax : QCadop);
+	QCmax = ((QCsp < QCadop) ? QCsp : QCadop);
 	if (QC > QCmax)
 	{
 		QC = QCmax;

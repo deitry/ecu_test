@@ -26,6 +26,8 @@ Uint32 EG::injN[DIESEL_N_CYL] = {0};
 
 float EG::err;
 float EG::errI = 0;
+float EG::errImax = 0.0032;
+float EG::errImax1 = errImax;	// действующее значение, может отличаться в зависимости от режима работы
 float EG::errD = 0;
 
 float EG::kP = 1e-5;
@@ -33,16 +35,18 @@ float EG::kI = 2e-6;
 float EG::kD = 2e-6;
 
 //float EG::nR = 400/HMLTP;
-RestrictedValue EG::nR(400/HMLTP, 1, 10, 10000);
+RestrictedValue EG::nR(400/HMLTP, 1, 10, 1105);
 
 float EG::nU = 400/HMLTP;
 float EG::omegaR = 0;
 
-float EG::Pinj = 0;
+//float EG::Pinj = 0;
+RestrictedValue EG::Pinj(7, 0, 6, 16);
 
 float EG::QC = 1e-4;
 float EG::QCmin = 1e-5;
 float EG::QCmax = 0.0028;
+float EG::QCsp = 0.0028;
 float EG::QCadop = 0.0028;
 float EG::alphaDop = 1.3;
 float EG::kQc = 2.3622;
@@ -124,6 +128,8 @@ Uint8 EG::chanT = CURR_SENS_CHANNEL_7;
 float EG::Tv_koeff = 1464;
 
 float EG::dZone = 0.5;
+float EG::dZone1 = 8;
+float EG::PIDstab = 0.6;
 
 float EG::Pk = 0;
 float EG::Tv = 0;
@@ -269,3 +275,22 @@ PAR_ID_BYTES EG::tPid = {
 PAR_ID_BYTES EG::singlePID = {
 		EC_BAD, 0
 };
+
+RestrictedValue::RestrictedValue(float value, bool restricted, float minimum, float maximum)
+{
+	_val = value;
+	_restricted = restricted;
+	_min = minimum;
+	_max = maximum;
+}
+
+int RestrictedValue::Check()	// проверка - всё ли хорошо (1) или всё плохо (0)
+{
+	if (!_restricted)
+		return 1;
+
+	if ((_val > _max) || (_val < _min))
+		return 0;
+
+	return 1;
+}
