@@ -111,10 +111,12 @@ __interrupt void xint1_isr(void)
 		errD = (errN - err) / delta_time;	// производна€ от ошибки
 
 		// считаем интегральную составл€ющую с учЄтом ограничени€
-		if ((fabs((errI + errN*delta_time)*kI) <= errImax)	// && (fabs(dOmega) < errDMax)
+		if (fabs((errI + errN*delta_time)*kI) <= errImax)	// && (fabs(dOmega) < errDMax)
 		{
-			errI = errI + errN*delta_time * ((err < dZone1) ? PIDstab : 1));
-		} else if (fabs(errI*kI) > errImax {
+			errI = errI + errN*delta_time * ((err < dZone1) ? PIDstab : 1);
+		}
+		else if (fabs(errI*kI) > errImax)
+		{
 			// чтобы предотвратить выбег интегральной составл€ющей при резком изменении QCmax,
 			// приравниваем интегральную ошибку ограничению с учЄтом текущего знака
 			errI *= errImax / kI / fabs(errI);
@@ -439,6 +441,19 @@ __interrupt void cpu_timer2_isr(void)
 		}
 	}
 
+	// ограничение темпа набора
+	// раз в 100 мкс
+	if ((timeCnt % 100) == 0)
+	{
+		if ((muN > 0) && (fabs(nU - pedal) > 1) )
+		{
+			nU += muN * 0.001 * ((pedal >= nU) ? 1 : -1);
+		}
+		else
+		{
+			nU = pedal;
+		}
+	}
 	fdbkTCnt++;
 
 	// Acknowledge this __interrupt to receive more __interrupts from group 1

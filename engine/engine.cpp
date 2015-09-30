@@ -87,14 +87,7 @@ int EC_Engine::ModeCalc()
 			// - считывание уставки - положение педали
 			if (!manPed)
 				pedal = Pedal();
-
-			// ограничение темпа набора
-			if ((muN > 0) && (muN < 1) && (fabs(nU - pedal) > 1) )
-			{
-				nU += muN*(pedal)*fabs(pedal-nU)/(pedal-nU);
-			} else {
-				nU = pedal;
-			}
+			// изменение уставки в соответствии с темпом набора перенесено в tim2
 
 			// Релейный закон, если пожелаем. Он сбрасывает резко подачу при положительном изменении
 			// выше некоторого значения (errRelayMax)
@@ -173,6 +166,7 @@ int EC_Engine::ModeCalc()
 		{
 		case EG_MANQC_ANGLE:
 			g_step2Us = angleToTime(injAngle);
+			QC = (injAngle - 3) * 120;
 			break;
 		case EG_MANQC_QC:
 			g_step2Us = QCtoUS(QC);
@@ -181,6 +175,8 @@ int EC_Engine::ModeCalc()
 		default:
 			// ничего не делать, значение g_step2Us остаётся таким какое есть
 			// только если его не поменяют через can
+			injAngle = timeToAngle(g_step2Us);
+			QC = (injAngle - 3) * 120;
 			break;
 		}
 	}
@@ -222,10 +218,11 @@ int EC_Engine::ModeCalc()
 #pragma CODE_SECTION("ramfuncs")
 Uint16 EC_Engine::QCtoUS(float qc)
 {
-	int tmp = qc/nR._val*1e9*kQc/HMLTP;
-	if (tmp > 0)
+	//int tmp = qc/nR._val*1e9*kQc/HMLTP; // перевод из кг/цикл в мкс
+	injAngle = QC/120 + 3;	// перевод из мм3/цикл в градусы
+	Uint16 step2 = angleToTime(injAngle);
+	if (step2 > 0)
 	{
-		Uint16 step2 = tmp;
 		return step2;
 	}
 	else return 0;
@@ -349,7 +346,7 @@ int EC_Engine::ControlCheck()
 /**
  * Перевод угла в продолжительность удерживающего импульса в мкс - необходимо для задания подачи в углах
  */
-//#pragma CODE_SECTION("ramfuncs")
+#pragma CODE_SECTION("ramfuncs")
 float angleToTime(float angle)
 {
 	return angle/omegaR* PI/180 *S2US;
@@ -359,7 +356,7 @@ float angleToTime(float angle)
  * Перевод продолжительности в угол.
  * Сейчас не используется.
  */
-//#pragma CODE_SECTION("ramfuncs")
+#pragma CODE_SECTION("ramfuncs")
 float timeToAngle(float time)
 {
 	return omegaR*time;
@@ -372,11 +369,18 @@ void EC_Engine::QCRestriction(void)
 	// 1. Скоростная характеристика
 	QCsp = EGD::SpChar->get(nR._val*HMLTP);
 	// 2. Пневмокоррекция
-	QCadop = Pk*18.29/(alphaDop*287.*Tv*14.3);
+	if (manQCalpha)
+	{
+		QCadop = Pk*18.29/(alphaDop*287.*Tv*14.3) / 800 * 1e9;
+		// - для QCmax выбираем минимальное
+		QCmax = ((QCsp < QCadop) ? QCsp : QCadop);
+	}
+	else
+	{
+		QCmax = QCsp;
+	}
 
 	// ПРИМЕНЕНИЕ ОГРАНИЧЕНИЙ
-	// - для QCmax выбираем минимальное
-	QCmax = ((QCsp < QCadop) ? QCsp : QCadop);
 	if (QC > QCmax)
 	{
 		QC = QCmax;

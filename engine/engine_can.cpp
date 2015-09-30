@@ -539,7 +539,7 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 		EG::kP = can_data.f.val.f;
 		break;
 	case EC_P_KI:
-		if (EG::kI != 0)
+		if (can_data.f.val.f != 0)
 		{
 			EG::errI *= EG::kI/can_data.f.val.f;
 		}

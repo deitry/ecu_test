@@ -3,7 +3,12 @@
 
 // массив сопоставлений между кодами цилиндров и программным номером цилиндра
 int EG::cylChannel[DIESEL_N_CYL_MAX] =
-		   {2,	// впрыскивать будем в третий канал
+		   {
+#ifdef ZAVOD
+			2,	// впрыскивать будем в третий канал
+#else
+			0,
+#endif
 			1,
 			2,
 			3,
@@ -26,13 +31,11 @@ Uint32 EG::injN[DIESEL_N_CYL] = {0};
 
 float EG::err;
 float EG::errI = 0;
-float EG::errImax = 0.0032;
-float EG::errImax1 = errImax;	// действующее значение, может отличаться в зависимости от режима работы
 float EG::errD = 0;
 
-float EG::kP = 1e-5;
-float EG::kI = 2e-6;
-float EG::kD = 2e-6;
+float EG::kP = 1;
+float EG::kI = 2e-1;
+float EG::kD = 2e-1;
 
 //float EG::nR = 400/HMLTP;
 RestrictedValue EG::nR(400/HMLTP, 1, 10, 1105);
@@ -44,10 +47,12 @@ float EG::omegaR = 0;
 RestrictedValue EG::Pinj(7, 0, 6, 16);
 
 float EG::QC = 1e-4;
-float EG::QCmin = 1e-5;
-float EG::QCmax = 0.0028;
-float EG::QCsp = 0.0028;
-float EG::QCadop = 0.0028;
+float EG::QCmin = -360;	// чтобы по формуле мог получаться угол впрыска = 0
+float EG::QCmax = 4000; // мм3/цикл //0.0028; // кг/цикл
+float EG::errImax = QCmax*1.1;
+float EG::errImax1 = errImax;	// действующее значение, может отличаться в зависимости от режима работы
+float EG::QCsp = QCmax;
+float EG::QCadop = QCmax;
 float EG::alphaDop = 1.3;
 float EG::kQc = 2.3622;
 
@@ -63,12 +68,12 @@ Uint16 EG::g_wakeup_Period = 1;			// период "пробуждающего" импульса для драйвер
 #ifndef ZAVOD
 int EG::manQC = 0;
 int EG::manInj = 0;
-int EG::manPed = 0;
-int EG::manQCt = 0;
+//int EG::manPed = 1;
+//int EG::manQCt = 0;
 #else
 int EG::manQC = 1;
 int EG::manInj = 1;
-int EG::manPed = 1;
+//int EG::manPed = 1;
 //int EG::manQCt = 1;
 #endif
 
@@ -86,6 +91,7 @@ int EG::manN = 0;
 //int EG::manAngle = 0;
 float EG::injAngle = 3.5;
 float EG::injOuvt = 0;
+int EG::manQCalpha = 0;
 
 int EG::finTime = 1000000;
 
@@ -139,7 +145,7 @@ float EG::dOmega;
 //float EG::errDMax = 1;
 float EG::errRelayMax = 3/HMLTP;
 float EG::QCprev = 0;
-float EG::muN = 0.00005;//0.000005;
+float EG::muN = 25; // об/мин /с //0.00005;
 float EG::nU0 = 400;
 
 int EG::progCnt = 0;
@@ -250,7 +256,8 @@ const double EGD::OUVTdata[15][15] =
 #pragma DATA_SECTION("eg_data")
 const double EGD::SpCharData[7] =
 {
-		0.0018, 0.00205, 0.0023, 0.00255, 0.0028, 0.00265, 0.00245
+		4000, 4000, 4000, 4000, 4000, 4000, 4000
+		//0.0018, 0.00205, 0.0023, 0.00255, 0.0028, 0.00265, 0.00245
 };
 
 const double EGD::NDSteadyData[3] =
@@ -260,7 +267,8 @@ const double EGD::NDSteadyData[3] =
 
 const double EGD::QCStartData[3] =
 {
-		2.8, 2.3, 1.8
+		600, 550, 500
+		//2.8, 2.3, 1.8
 };
 
 FMField2* EGD::OUVT = new FMField2;

@@ -23,7 +23,7 @@ typedef bool _Bool;
 #define DIESEL_N_CYL_MAX	12			// максимально возможное количество цилиндров для данной версии блока
 #define DIESEL_D_ZONE		0.5			// зона нечувствительности регулятора - лучше сделать переменной
 #define DIESEL_Z_CUT		1			// количество вырезанных зубов
-#define DIESEL_Z_ALL		120			// общее количество зубов с учётом вырезанных
+#define DIESEL_Z_ALL		180			// общее количество зубов с учётом вырезанных
 #define DIESEL_Z_PHI		(360/DIESEL_Z_ALL)		// угол от одного зуба до другого
 #define DIESEL_Z_MAX		(DIESEL_Z_ALL-DIESEL_Z_CUT) 	// количество присутствующих зубов
 #define DIESEL_PHI_MAX		(720/HMLTP)		// угол поворота за цикл (два оборота)
@@ -190,6 +190,8 @@ namespace EG //I
 #define EG_MANQC_ANGLE	2					// 2 - продолжительность подачи определяется по углу injAngle
 #define EG_MANQC_QC		3					// 3 - продолжительность подачи рассчитывается исходя из величины QC
 											//		и функции перевода QCtoUS()
+
+	extern int manQCalpha;					// вкл/выкл пневмокоррекции
 
 	//extern int manQCt;						// задание подачи в мкс
 	extern int manQCRelay;						// задание подачи в мкс
