@@ -46,6 +46,13 @@ void EC_Engine::setQCrelay()
 	}
 }
 
+void EC_Engine::clearPID(void)
+{
+	nU = nR._val;	// сбрасываем уставку на текущее положение частоты вращения
+		// значение pedal остаётся прежним, поэтому такое действие обеспечит темп набора
+	errI = (QC - kP*err - kD*errD)/kI;
+}
+
 /**
  * Перерасчёт режима работы.
  * На данный момент под этим подразумевается опрос всех датчиков и изменение
@@ -72,7 +79,9 @@ int EC_Engine::ModeCalc()
 		{
 		// стартовое количество топлива
 		case EC_Start:
-			QC = EGD::QCStart->get(Tcool());
+			QC = QCstart;
+			g_step2Us = QCtoUS(QC);
+			//QC = EGD::QCStart->get(Tcool());
 			break;
 
 		// холостой ход - поддержание - ПИД
@@ -157,6 +166,9 @@ int EC_Engine::ModeCalc()
 			setQCMaxDyn();	// устанавливает непосредственно g_step2Us
 			if (g_step2Us > QCmax) g_step2Us = QCmax;
 			break;
+		case EC_Standby:
+		default:
+			break;
 		}
 	}
 	else
@@ -183,7 +195,7 @@ int EC_Engine::ModeCalc()
 
 	// проверка на доступность форсунок
 	// чтобы не начать изменять параметры прямо перед впрыском - иначе можем не успеть
-	int flag = 1;
+	/*int flag = 1;
 	for (int i = 0; i < DIESEL_N_CYL; i++)
 	{
 		if (injSw[i])
@@ -193,9 +205,9 @@ int EC_Engine::ModeCalc()
 		}
 	}
 	if (flag)
-	{
+	{*/
 		setInjector(g_step1Us, g_step2Us, g_duty1, g_duty2);
-	}
+	//}
 
 	// ждём пока завершится setInjector
 	for (int i = 0; i < DIESEL_T_SETUP; i++)
@@ -310,7 +322,7 @@ void EC_Engine::setInjPhi(void)
 //#pragma CODE_SECTION("ramfuncs")
 int EC_Engine::ControlCheck()
 {
-	if (!manMode)
+	if (0) //!manMode)
 	{
 		// значение режима определяем по резистивному датчику
 		switch (Key())

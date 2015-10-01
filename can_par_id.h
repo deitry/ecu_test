@@ -125,16 +125,20 @@ public:
 #define 	EC_S_NU				0x01	// уставка
 #define 	EC_S_OMEGA			0x02	// частота в рад/с
 #define 	EC_S_DTIME			0x03	// врем€ между зубь€ми (датчик ’олла)
+#define		EC_S_NMIN			0x04	// минимальное значение частоты, ниже которого система перестаЄт впрыскивать
+#define 	EC_S_NMAX			0x05	// верхнее ограничение частоты вращени€
+! #define 	EC_S_NRESTR			0x06	// ограничение частоты вращени€
 
 #define EC_G_QC			0x03			// группа параметров: подача
 #define 	EC_S_QC_T			0x00	// продолжительность удерживающего импульса
 #define 	EC_S_QC_AN			0x01	// продолжительность в углах
-#define 	EC_S_QC				0x02	// подача кг/цикл
+#define 	EC_S_QC				0x02	// подача мм3/цикл
 #define		EC_S_ADOP			0x03	// ограничение по альфе
 #define		EC_S_QC_ADOP		0x04	// используетс€ дл€ передачи QCmax // ограничение подачи по альфе
 #define 	EC_S_QC_MAX			0x05	// максимальное значение подачи
 #define 	EC_S_QC_MIN			0x06	// минимальное значение подачи
 #define		EC_S_KQC			0x07	// переводной коэффициент кг/л -> мкс
+#define 	EC_S_START			0x08	// стартовое значение подачи в мм3/цикл
 #define EC_P_NCYL		0x04			// количество цилиндров
 	// подиндекс (i-1) будет использоватьс€ дл€ указани€ канала, соответствующего данному цилиндру
 #define EC_P_PED		0x05			// значение педали
@@ -160,6 +164,7 @@ public:
 #define 	EC_S_M_AN			0x01	// ручна€ установка подачи в углах
 #define 	EC_S_M_IAN			0x02	// угол дл€ установки в качестве подачи
 #define		EC_S_M_QCT			0x03	// ручна€ установка подачи в мкс
+#define 	EC_S_M_QALPHA		0x04	// вкл/выкл пневмокоррекции
 #define EC_P_M_INJ		0x23			// ручной режим впрыска
 #define 	EC_S_M_IONCE		0x01	// единичный впрыск или запуск
 #define 	EC_S_M_IN			0x02	// частота впрысков
@@ -177,8 +182,11 @@ public:
 #define 	EC_S_D_PEDAL		0x01	// педаль
 #define 	EC_S_D_KEY			0x02	// ключ
 #define 	EC_S_D_PK			0x03	// давление наддува
-#define 	EC_S_D_PINJ			0x04	// давление впрыска
+#define 	EC_S_D_PINJ			0x04	// давление масла / название переменной надо бы изменить
 #define 	EC_S_D_TV			0x05	// температура воздуха
+#define 	EC_S_D_PINJMAX		0x06	// верхнее ограничение давлени€ масла
+#define 	EC_S_D_PINJMIN		0x07	// нижнее ограничение давлени€ масла
+! #define 	EC_S_D_PINJRESTR	0x08	// вкл/выкл ограничени€ по давлению масла
 
 #define EC_T_UOVT		0x31			// таблица ”ќ¬“
 #define EC_T_SPCHAR		0x32			// таблица - скоростна€ характеристика
@@ -191,6 +199,7 @@ public:
 #define EC_P_KD			0x43			//  д
 #define EC_P_ERR		0x44			// еррѕ *  п
 #define EC_P_ERRI		0x45			// ерр» *  и
+#define 	EC_S_ERRIMAX	0x01		// ограничение интегральной составл€ющей default = QCmax*1.1
 #define EC_P_ERRD		0x46			// еррƒ *  д
 
 #define EC_P_MUN		0x47			// коэффициент набора частоты вращени€

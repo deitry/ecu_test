@@ -49,6 +49,13 @@ RestrictedValue EG::Pinj(7, 0, 6, 16);
 float EG::QC = 1e-4;
 float EG::QCmin = -360;	// чтобы по формуле мог получаться угол впрыска = 0
 float EG::QCmax = 4000; // мм3/цикл //0.0028; // кг/цикл
+
+#ifdef ZAVOD
+float EG::QCstart = 500;
+#else
+float EG::QCstart = 5;
+#endif
+
 float EG::errImax = QCmax*1.1;
 float EG::errImax1 = errImax;	// действующее значение, может отличаться в зависимости от режима работы
 float EG::QCsp = QCmax;
@@ -68,12 +75,12 @@ Uint16 EG::g_wakeup_Period = 1;			// период "пробуждающего" импульса для драйвер
 #ifndef ZAVOD
 int EG::manQC = 0;
 int EG::manInj = 0;
-//int EG::manPed = 1;
+int EG::manPed = 1;
 //int EG::manQCt = 0;
 #else
 int EG::manQC = 1;
 int EG::manInj = 1;
-//int EG::manPed = 1;
+int EG::manPed = 1;
 //int EG::manQCt = 1;
 #endif
 

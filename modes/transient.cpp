@@ -51,7 +51,6 @@ int EC_Engine::Transient()
 	this->setInjPhi();
 	// - коррекция величины подачи
 	this->ModeCalc();
-	// мониторинг - отправка сообщений по CAN - сделать "параллельным процессом"?
 
 	if (manDur)
 	{

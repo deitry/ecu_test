@@ -14,7 +14,7 @@
 #include "../can_par_id.h"
 
 // список режимов
-#define EC_MAX_MODE 10
+#define EC_MAX_MODE 12
 enum eng_mod { 	EC_Start = 1,		// пуск
 				EC_Steady,			// холостой ход
 				EC_Transient,		// педаль-уставка
@@ -24,7 +24,8 @@ enum eng_mod { 	EC_Start = 1,		// пуск
 				EC_Finish,			// останов
 				EC_Failure,			// ошибка
 				EC_Crash,			// хана
-				EC_End};			// конец
+				EC_End,				// конец
+				EC_Standby};		// ничегонеделание
 
 // вспомогательные функции.
 void sendCanMsgX(CAN_DATA* data);
@@ -76,6 +77,8 @@ protected:
 	void setQCAuto(void);
 	void setQCSteady(void);
 	void setQCrelay(void);
+
+	void clearPID(void); // очищаем errI, чтобы с чистого листа начинать вычисление подачи при переходе на ПИД
 
 	// - - - запросы к переменным выполнены в виде функций - запросы к драйверам низкого уровня
 	float WD();		// частота вращения

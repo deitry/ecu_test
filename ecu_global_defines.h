@@ -161,6 +161,7 @@ namespace EG //I
 	extern float nU;						// уставка частоты, об/мин
 	extern float omegaR;					// текущая частота, рад/с
 	extern float QC, QCmin, QCmax, QCsp;			// подача, кг/цикл, нижнее и верхнее ограничение
+	extern float QCstart;					// стартовая подача
 	extern float QCadop, alphaDop;			// для ограничения по альфе
 
 	extern float muN;						// коэффициент темпа набора частоты вращения
