@@ -33,18 +33,17 @@ float EG::err;
 float EG::errI = 0;
 float EG::errD = 0;
 
-float EG::kP = 1;
-float EG::kI = 2e-1;
+float EG::kP = 4;
+float EG::kI = 4;
 float EG::kD = 2e-1;
 
 //float EG::nR = 400/HMLTP;
-RestrictedValue EG::nR(400/HMLTP, 1, 10, 1105);
+RestrictedValue EG::nR(300/HMLTP, 1, 10, 1100);
 
-float EG::nU = 400/HMLTP;
+float EG::nU = 300/HMLTP;
 float EG::omegaR = 0;
 
 //float EG::Pinj = 0;
-RestrictedValue EG::Pinj(7, 0, 6, 16);
 
 float EG::QC = 1e-4;
 float EG::QCmin = -360;	// чтобы по формуле мог получаться угол впрыска = 0
@@ -52,8 +51,10 @@ float EG::QCmax = 4000; // мм3/цикл //0.0028; // кг/цикл
 
 #ifdef ZAVOD
 float EG::QCstart = 500;
+RestrictedValue EG::Pinj(7, 1, 6, 16);
 #else
 float EG::QCstart = 5;
+RestrictedValue EG::Pinj(7, 0, 6, 16);
 #endif
 
 float EG::errImax = QCmax*1.1;
@@ -73,8 +74,8 @@ Uint16 EG::g_wakeup_High = 1;			// продолжительность "пробуждающего" импульса дл
 Uint16 EG::g_wakeup_Period = 1;			// период "пробуждающего" импульса для драйвера, LSB = 1us
 
 #ifndef ZAVOD
-int EG::manQC = 0;
-int EG::manInj = 0;
+int EG::manQC = 1;
+int EG::manInj = 1;
 int EG::manPed = 1;
 //int EG::manQCt = 0;
 #else
@@ -90,7 +91,7 @@ int EG::manOUVT = 1;
 int EG::manMode = 1;
 
 int EG::pedStep = 5;
-float EG::pedal = 400/HMLTP;
+float EG::pedal = 300/HMLTP;
 int EG::injOnce = 0;
 int EG::injCyl = 0x0000;
 int EG::manCnt = 0;
@@ -153,7 +154,7 @@ float EG::dOmega;
 float EG::errRelayMax = 3/HMLTP;
 float EG::QCprev = 0;
 float EG::muN = 25; // об/мин /с //0.00005;
-float EG::nU0 = 400;
+float EG::nU0 = 300;
 
 int EG::progCnt = 0;
 int EG::fdbkTCnt = 0;

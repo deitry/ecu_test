@@ -220,6 +220,7 @@ int EC_Engine::sendCanMsg(PAR_ID_BYTES id)
 		case EC_S_DTIME: data.f.val.f = delta_time; break;
 		case EC_S_NMIN: data.f.val.f = nR._min; break;
 		case EC_S_NMAX: data.f.val.f = nR._max; break;
+		case EC_S_NRESTR: data.f.val.i = nR._restricted; break;
 		}
 		break;
 	case EC_G_QC:
@@ -322,8 +323,9 @@ int EC_Engine::sendCanMsg(PAR_ID_BYTES id)
 		case EC_S_D_PK: data.f.val.f = EG::Pk; break;
 		case EC_S_D_TV: data.f.val.f = EG::Tv; break;
 		case EC_S_D_PINJ: data.f.val.f = EG::Pinj._val; break;
-		case EC_S_D_PINJMAX: data.f.val.f = EG:: Pinj._max; break;
-		case EC_S_D_PINJMIN: data.f.val.f = EG:: Pinj._min; break;
+		case EC_S_D_PINJMAX: data.f.val.f = EG::Pinj._max; break;
+		case EC_S_D_PINJMIN: data.f.val.f = EG::Pinj._min; break;
+		case EC_S_D_PINJRESTR: data.f.val.i = EG::Pinj._restricted; break;
 		}
 		break;
 	case EC_P_KP:
@@ -459,7 +461,7 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 		case EC_S_DTIME: delta_time = can_data.f.val.f; break;
 		case EC_S_NMIN: nR._min = can_data.f.val.f; break;
 		case EC_S_NMAX: nR._max = can_data.f.val.f; break;
-		case EC_S_NRESTR: nR._restricted = can_data.f.val.f; break;
+		case EC_S_NRESTR: nR._restricted = can_data.f.val.i; break;
 		}
 		break;
 	case EC_G_QC:
@@ -566,7 +568,7 @@ void EC_Engine::recieveCanMsg(tCANMsgObject* msg)
 		case EC_S_D_PINJ: EG::Pinj._val = can_data.f.val.f; break;
 		case EC_S_D_PINJMAX: EG::Pinj._max = can_data.f.val.f; break;
 		case EC_S_D_PINJMIN: EG::Pinj._min = can_data.f.val.f; break;
-		case EC_S_D_PINJRESTR: EG::Pinj._restricted = can_data.f.val.f; break;
+		case EC_S_D_PINJRESTR: EG::Pinj._restricted = can_data.f.val.i; break;
 		}
 		break;
 	case EC_P_KP:
